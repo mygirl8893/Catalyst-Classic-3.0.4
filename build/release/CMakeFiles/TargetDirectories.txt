@@ -1,0 +1,15 @@
+/root/coins/guiclassic/build/release/CMakeFiles/install/local.dir
+/root/coins/guiclassic/build/release/CMakeFiles/qrencode.dir
+/root/coins/guiclassic/build/release/CMakeFiles/edit_cache.dir
+/root/coins/guiclassic/build/release/CMakeFiles/package_source.dir
+/root/coins/guiclassic/build/release/CMakeFiles/Mnemonics.dir
+/root/coins/guiclassic/build/release/CMakeFiles/install/strip.dir
+/root/coins/guiclassic/build/release/CMakeFiles/list_install_components.dir
+/root/coins/guiclassic/build/release/CMakeFiles/install.dir
+/root/coins/guiclassic/build/release/CMakeFiles/catalyst.dir
+/root/coins/guiclassic/build/release/CMakeFiles/package.dir
+/root/coins/guiclassic/build/release/CMakeFiles/cryptonote.dir
+/root/coins/guiclassic/build/release/CMakeFiles/rebuild_cache.dir
+/root/coins/guiclassic/build/release/CMakeFiles/Mnemonics_autogen.dir
+/root/coins/guiclassic/build/release/CMakeFiles/catalyst_autogen.dir
+/root/coins/guiclassic/build/release/CMakeFiles/cryptonote_autogen.dir
