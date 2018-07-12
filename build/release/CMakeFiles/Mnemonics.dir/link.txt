@@ -1,2 +1,0 @@
-/usr/bin/ar qc libMnemonics.a  CMakeFiles/Mnemonics.dir/cryptonote/src/mnemonics/electrum-words.cpp.o CMakeFiles/Mnemonics.dir/Mnemonics_autogen/mocs_compilation.cpp.o
-/usr/bin/ranlib libMnemonics.a
