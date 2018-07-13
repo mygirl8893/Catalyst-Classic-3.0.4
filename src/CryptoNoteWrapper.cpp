@@ -194,6 +194,212 @@ public:
     return m_node.getPeerCount();
   }
 
+  uint64_t getDifficulty() {
+    try {
+        CryptoNote::COMMAND_RPC_GET_INFO::request req;
+        CryptoNote::COMMAND_RPC_GET_INFO::response res;
+        CryptoNote::HttpClient httpClient(m_dispatcher, m_node.m_nodeHost, m_node.m_nodePort);
+        CryptoNote::invokeJsonCommand(httpClient, "/getinfo", req, res);
+        std::string err = interpret_rpc_response(true, res.status);
+      if (err.empty())
+        return res.difficulty;
+      else {
+        qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+        return 0;
+      }}
+        catch (const CryptoNote::ConnectException&) {
+        qDebug() << "Wallet failed to connect to daemon.";
+        return 0;
+      } catch (const std::exception& e) {
+        qDebug() << "Failed to invoke rpc method: " << e.what();
+        return 0;
+      }
+  }
+
+  uint64_t getTxCount() {
+      try {
+          CryptoNote::COMMAND_RPC_GET_INFO::request req;
+          CryptoNote::COMMAND_RPC_GET_INFO::response res;
+          CryptoNote::HttpClient httpClient(m_dispatcher, m_node.m_nodeHost, m_node.m_nodePort);
+          CryptoNote::invokeJsonCommand(httpClient, "/getinfo", req, res);
+          std::string err = interpret_rpc_response(true, res.status);
+        if (err.empty())
+          return res.tx_count;
+        else {
+          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          return 0;
+        }}
+          catch (const CryptoNote::ConnectException&) {
+          qDebug() << "Wallet failed to connect to daemon.";
+          return 0;
+        } catch (const std::exception& e) {
+          qDebug() << "Failed to invoke rpc method: " << e.what();
+          return 0;
+        }
+  }
+
+  uint64_t getTxPoolSize() {
+      try {
+          CryptoNote::COMMAND_RPC_GET_INFO::request req;
+          CryptoNote::COMMAND_RPC_GET_INFO::response res;
+          CryptoNote::HttpClient httpClient(m_dispatcher, m_node.m_nodeHost, m_node.m_nodePort);
+          CryptoNote::invokeJsonCommand(httpClient, "/getinfo", req, res);
+          std::string err = interpret_rpc_response(true, res.status);
+        if (err.empty())
+          return res.tx_pool_size;
+        else {
+          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          return 0;
+        }}
+          catch (const CryptoNote::ConnectException&) {
+          qDebug() << "Wallet failed to connect to daemon.";
+          return 0;
+        } catch (const std::exception& e) {
+          qDebug() << "Failed to invoke rpc method: " << e.what();
+          return 0;
+        }
+  }
+
+  uint64_t getAltBlocksCount() {
+      try {
+          CryptoNote::COMMAND_RPC_GET_INFO::request req;
+          CryptoNote::COMMAND_RPC_GET_INFO::response res;
+          CryptoNote::HttpClient httpClient(m_dispatcher, m_node.m_nodeHost, m_node.m_nodePort);
+          CryptoNote::invokeJsonCommand(httpClient, "/getinfo", req, res);
+          std::string err = interpret_rpc_response(true, res.status);
+        if (err.empty())
+          return res.alt_blocks_count;
+        else {
+          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          return 0;
+        }}
+          catch (const CryptoNote::ConnectException&) {
+          qDebug() << "Wallet failed to connect to daemon.";
+          return 0;
+        } catch (const std::exception& e) {
+          qDebug() << "Failed to invoke rpc method: " << e.what();
+          return 0;
+        }
+  }
+
+  uint64_t getConnectionsCount() {
+      try {
+          CryptoNote::COMMAND_RPC_GET_INFO::request req;
+          CryptoNote::COMMAND_RPC_GET_INFO::response res;
+          CryptoNote::HttpClient httpClient(m_dispatcher, m_node.m_nodeHost, m_node.m_nodePort);
+          CryptoNote::invokeJsonCommand(httpClient, "/getinfo", req, res);
+          std::string err = interpret_rpc_response(true, res.status);
+        if (err.empty())
+          return res.outgoing_connections_count + res.incoming_connections_count;
+        else {
+          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          return 0;
+        }}
+          catch (const CryptoNote::ConnectException&) {
+          qDebug() << "Wallet failed to connect to daemon.";
+          return 0;
+        } catch (const std::exception& e) {
+          qDebug() << "Failed to invoke rpc method: " << e.what();
+          return 0;
+        }
+  }
+
+  uint64_t getOutgoingConnectionsCount() {
+      try {
+          CryptoNote::COMMAND_RPC_GET_INFO::request req;
+          CryptoNote::COMMAND_RPC_GET_INFO::response res;
+          CryptoNote::HttpClient httpClient(m_dispatcher, m_node.m_nodeHost, m_node.m_nodePort);
+          CryptoNote::invokeJsonCommand(httpClient, "/getinfo", req, res);
+          std::string err = interpret_rpc_response(true, res.status);
+        if (err.empty())
+          return res.outgoing_connections_count;
+        else {
+          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          return 0;
+        }}
+          catch (const CryptoNote::ConnectException&) {
+          qDebug() << "Wallet failed to connect to daemon.";
+          return 0;
+        } catch (const std::exception& e) {
+          qDebug() << "Failed to invoke rpc method: " << e.what();
+          return 0;
+        }
+  }
+
+  uint64_t getIncomingConnectionsCount() {
+      try {
+          CryptoNote::COMMAND_RPC_GET_INFO::request req;
+          CryptoNote::COMMAND_RPC_GET_INFO::response res;
+          CryptoNote::HttpClient httpClient(m_dispatcher, m_node.m_nodeHost, m_node.m_nodePort);
+          CryptoNote::invokeJsonCommand(httpClient, "/getinfo", req, res);
+          std::string err = interpret_rpc_response(true, res.status);
+        if (err.empty())
+          return res.incoming_connections_count;
+        else {
+          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          return 0;
+        }}
+          catch (const CryptoNote::ConnectException&) {
+          qDebug() << "Wallet failed to connect to daemon.";
+          return 0;
+        } catch (const std::exception& e) {
+          qDebug() << "Failed to invoke rpc method: " << e.what();
+          return 0;
+        }
+  }
+
+  uint64_t getWhitePeerlistSize() {
+      try {
+          CryptoNote::COMMAND_RPC_GET_INFO::request req;
+          CryptoNote::COMMAND_RPC_GET_INFO::response res;
+          CryptoNote::HttpClient httpClient(m_dispatcher, m_node.m_nodeHost, m_node.m_nodePort);
+          CryptoNote::invokeJsonCommand(httpClient, "/getinfo", req, res);
+          std::string err = interpret_rpc_response(true, res.status);
+        if (err.empty())
+          return res.white_peerlist_size;
+        else {
+          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          return 0;
+        }}
+          catch (const CryptoNote::ConnectException&) {
+          qDebug() << "Wallet failed to connect to daemon.";
+          return 0;
+        } catch (const std::exception& e) {
+          qDebug() << "Failed to invoke rpc method: " << e.what();
+          return 0;
+        }
+  }
+
+  uint64_t getGreyPeerlistSize() {
+      try {
+          CryptoNote::COMMAND_RPC_GET_INFO::request req;
+          CryptoNote::COMMAND_RPC_GET_INFO::response res;
+          CryptoNote::HttpClient httpClient(m_dispatcher, m_node.m_nodeHost, m_node.m_nodePort);
+          CryptoNote::invokeJsonCommand(httpClient, "/getinfo", req, res);
+          std::string err = interpret_rpc_response(true, res.status);
+        if (err.empty())
+          return res.grey_peerlist_size;
+        else {
+          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          return 0;
+        }}
+          catch (const CryptoNote::ConnectException&) {
+          qDebug() << "Wallet failed to connect to daemon.";
+          return 0;
+        } catch (const std::exception& e) {
+          qDebug() << "Failed to invoke rpc method: " << e.what();
+          return 0;
+        }
+  }
+
+  CryptoNote::BlockHeaderInfo getLastLocalBlockHeaderInfo() {
+    return m_node.getLastLocalBlockHeaderInfo();
+  }
+
+  uint8_t getCurrentBlockMajorVersion() {
+    return getLastLocalBlockHeaderInfo().majorVersion;
+  }
+
   CryptoNote::IWalletLegacy* createWallet() override {
     return new CryptoNote::WalletLegacy(m_currency, m_node, m_logManager);
   }
@@ -309,6 +515,50 @@ public:
 
   uint64_t getPeerCount() const override {
     return m_node.getPeerCount();
+  }
+
+  uint64_t getDifficulty() {
+    return m_core.getNextBlockDifficulty();
+  }
+
+  uint64_t getTxCount() {
+    return m_core.get_blockchain_total_transactions() - m_core.get_current_blockchain_height();
+  }
+
+  uint64_t getTxPoolSize() {
+    return m_core.get_pool_transactions_count();
+  }
+
+  uint64_t getAltBlocksCount() {
+    return m_core.get_alternative_blocks_count();
+  }
+
+  uint64_t getConnectionsCount() {
+    return m_nodeServer.get_connections_count();
+  }
+
+  uint64_t getOutgoingConnectionsCount() {
+    return m_nodeServer.get_outgoing_connections_count();
+  }
+
+  uint64_t getIncomingConnectionsCount() {
+    return m_nodeServer.get_connections_count() - m_nodeServer.get_outgoing_connections_count();
+  }
+
+  uint64_t getWhitePeerlistSize() {
+    return m_nodeServer.getPeerlistManager().get_white_peers_count();
+  }
+
+  uint64_t getGreyPeerlistSize() {
+    return m_nodeServer.getPeerlistManager().get_gray_peers_count();
+  }
+
+  CryptoNote::BlockHeaderInfo getLastLocalBlockHeaderInfo() {
+    return m_node.getLastLocalBlockHeaderInfo();
+  }
+
+  uint8_t getCurrentBlockMajorVersion() {
+    return getLastLocalBlockHeaderInfo().majorVersion;
   }
 
   CryptoNote::IWalletLegacy* createWallet() override {

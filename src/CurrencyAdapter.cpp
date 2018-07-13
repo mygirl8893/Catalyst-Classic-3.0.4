@@ -4,7 +4,6 @@
 #include "CurrencyAdapter.h"
 #include "CryptoNoteWalletConfig.h"
 #include "LoggerAdapter.h"
-#include "Settings.h"
 
 namespace WalletGui {
 
@@ -13,7 +12,7 @@ CurrencyAdapter& CurrencyAdapter::instance() {
   return inst;
 }
 
-CurrencyAdapter::CurrencyAdapter() : m_currency(CryptoNote::CurrencyBuilder(LoggerAdapter::instance().getLoggerManager()).testnet(Settings::instance().isTestnet()).currency()) {
+CurrencyAdapter::CurrencyAdapter() : m_currency(CryptoNote::CurrencyBuilder(LoggerAdapter::instance().getLoggerManager()).currency()) {
 }
 
 CurrencyAdapter::~CurrencyAdapter() {

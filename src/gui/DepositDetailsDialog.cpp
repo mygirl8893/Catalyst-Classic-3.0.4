@@ -13,7 +13,7 @@ DepositDetailsDialog::DepositDetailsDialog(const QModelIndex &_index, QWidget* _
   "<span style=\" font-weight:600;\">Deposit info: </span></p><br>\n"
   "<span style=\" font-weight:600;\">Status: </span>%1</p><br>\n"
   "<span style=\" font-weight:600;\">Amount: </span>%2</p><br>\n"
-  "<span style=\" font-weight:600;\">Interest: </span>%3</p><br>\n"
+  "<span style=\" font-weight:600;\">PoV: </span>%3</p><br>\n"
   "<span style=\" font-weight:600;\">Sum: </span>%4</p><br>\n"
   "<span style=\" font-weight:600;\">Year interest rate: </span>%5</p><br>\n"
   "<span style=\" font-weight:600;\">Term: </span>%6</p><br>\n"
