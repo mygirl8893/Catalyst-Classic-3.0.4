@@ -471,10 +471,10 @@ void MainWindow::walletClosed() {
   }
 }
 
-void MainWindow::replyTo(const QModelIndex& _index) {
-  m_ui->m_sendMessageFrame->setAddress(_index.data(MessagesModel::ROLE_HEADER_REPLY_TO).toString());
-  m_ui->m_sendMessageAction->trigger();
-}
+//void MainWindow::replyTo(const QModelIndex& _index) {
+  //m_ui->m_sendMessageFrame->setAddress(_index.data(MessagesModel::ROLE_HEADER_REPLY_TO).toString());
+  //m_ui->m_sendMessageAction->trigger();
+//}
 
 void MainWindow::payTo(const QModelIndex& _index) {
   m_ui->m_sendFrame->setAddress(_index.data(AddressBookModel::ROLE_ADDRESS).toString());
