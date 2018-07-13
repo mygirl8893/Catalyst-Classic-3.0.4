@@ -88,8 +88,8 @@ void MainWindow::initUi() {
   m_ui->m_receiveFrame->hide();
   m_ui->m_transactionsFrame->hide();
   m_ui->m_addressBookFrame->hide();
-  m_ui->m_messagesFrame->hide();
-  m_ui->m_sendMessageFrame->hide();
+  //m_ui->m_messagesFrame->hide();
+  //m_ui->m_sendMessageFrame->hide();
   m_ui->m_miningFrame->hide();
   m_ui->m_depositsFrame->hide();
 
@@ -458,8 +458,8 @@ void MainWindow::walletClosed() {
   m_ui->m_sendFrame->hide();
   m_ui->m_transactionsFrame->hide();
   m_ui->m_addressBookFrame->hide();
-  m_ui->m_messagesFrame->hide();
-  m_ui->m_sendMessageFrame->hide();
+  //m_ui->m_messagesFrame->hide();
+  //m_ui->m_sendMessageFrame->hide();
   m_ui->m_miningFrame->hide();
   m_ui->m_depositsFrame->hide();
   m_ui->m_resetAction->setEnabled(false);
