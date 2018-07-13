@@ -32,7 +32,7 @@ endif(WIN32)
 
 find_package(Boost 1.55 REQUIRED COMPONENTS date_time filesystem program_options regex serialization system thread chrono)
 if ((${Boost_MAJOR_VERSION} EQUAL 1) AND (${Boost_MINOR_VERSION} EQUAL 54))
-	message(SEND_ERROR "Boost version 1.54 is unsupported, more details are available here http://goo.gl/RrCFmA")
+	message(SEND_ERROR "Boostバージョン1.54はサポートされていません。詳細はこちら http://goo.gl/RrCFmA")
 endif ()
 
 include_directories(${Boost_INCLUDE_DIRS})
@@ -191,7 +191,7 @@ qt5_add_resources(RCC ${QRC})
 
 if (WIN32)
   if (NOT MSVC)
-	message(FATAL_ERROR "Only MSVC is supported on this platform")
+	message(FATAL_ERROR "このプラットフォームではMSVCのみがサポートされています")
   endif ()
   add_definitions(/D_CRT_SECURE_NO_WARNINGS /D_WIN32_WINNT=0x0600 /DSTATICLIB)
   include_directories(cryptonote/src/platform/msc)
@@ -293,7 +293,7 @@ elseif (UNIX)
         set(CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_VENDOR} <crbru.yuthafiga@gmail.com>")
         set(CPACK_DEBIAN_PACKAGE_SECTION Office)
         set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-        set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "Catalyst Coin is the most secure, stable, and decentralized platform amongst the thousands of digital currencies in the market today.")
+        set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "Catalyst Coinは、今日の市場の何千ものデジタル通貨の中で最も安全で安定した分散プラットフォームです.")
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${VERSION_RELEASE}${CPACK_SYSTEM_NAME}")
     else()
         set(CPACK_GENERATOR RPM)
@@ -303,18 +303,18 @@ set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}-${CPACK_PACKAGE_VERSIO
         set(CPACK_RPM_PACKAGE_GROUP Office)
         set(CPACK_RPM_PACKAGE_REQUIRES "qt5-qtbase >= 5.3.2, qt5-qtbase-gui >= 5.3.2")
         set(CPACK_RPM_PACKAGE_SUMMARY "Catalyst XAT wallet")
-        set(CPACK_RPM_PACKAGE_DESCRIPTION "Catalyst XAT wallet is an innovative, cryptographically-secured digital asset ledger based on blockchain technology. 
+        set(CPACK_RPM_PACKAGE_DESCRIPTION "Catalyst XATウォレットは、ブロックチェーンテクノロジに基づいた、革新的で暗号で保護されたデジタル資産帳票です. 
 
- Features of the Catalyst wallet listed bellow:
- * Classic Bitcoin alike appearance in CryptoNote based cryptocurrency,
-   made with QT and open-source.
- * Instant XAT transfers and transfers notifications
- * Safe and secure, full Catalyst network node in wallet, fast network
-   syncronization.
- * Wallet encryption
- * Fast and hardware optimized
- * Payment For all merchant[Halal product]
- * Open and easy. Private keys can be exported into other clients.")
+ Catalyst walletの機能は次のとおりです。
+  * CryptoNoteのクラシックBitcoinのような外観cryptocurrency、
+    QTとオープンソースで作られています。
+  *インスタントXATの転送と転送の通知
+  *安全で安全な、完全なCatalystネットワークノード、ウォレット、高速ネットワーク
+    同期化。
+  *ウォレットの暗号化
+  *高速かつハードウェア最適化
+  *支払いすべての商人[ハラール製品]
+  *オープンで簡単。 秘密鍵は他のクライアントにエクスポートすることができます.")
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${VERSION_RELEASE}${CPACK_SYSTEM_NAME}")
     endif ()
 elseif (WIN32)
