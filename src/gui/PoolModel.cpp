@@ -42,7 +42,7 @@ QVariant PoolModel::headerData(int _section, Qt::Orientation _orientation, int _
     return QVariant();
   }
 
-  return tr("Pool URL");
+  return tr("プールのURL");
 }
 
 bool PoolModel::setData(const QModelIndex& _index, const QVariant& _value, int _role) {

@@ -44,9 +44,9 @@ QVariant AddressBookModel::data(const QModelIndex& _index, int _role) const {
     }
 
   case ROLE_LABEL:
-    return address.value("label");
+    return address.value("ラベル");
   case ROLE_ADDRESS:
-    return address.value("address");
+    return address.value("住所");
   default:
     return QVariant();
   }
@@ -65,9 +65,9 @@ QVariant AddressBookModel::headerData(int _section, Qt::Orientation _orientation
 
   switch (_section) {
   case COLUMN_LABEL:
-    return tr("Label");
+    return tr("ラベル");
   case COLUMN_ADDRESS:
-    return tr("Address");
+    return tr("住所");
   }
 
   return QVariant();
@@ -92,8 +92,8 @@ int AddressBookModel::rowCount(const QModelIndex& _parent) const {
 void AddressBookModel::addAddress(const QString& _label, const QString& _address) {
   beginInsertRows(QModelIndex(), m_addressBook.size(), m_addressBook.size());
   QJsonObject newAddress;
-  newAddress.insert("label", _label);
-  newAddress.insert("address", _address);
+  newAddress.insert("ラベル", _label);
+  newAddress.insert("住所", _address);
   m_addressBook.append(newAddress);
   endInsertRows();
   saveAddressBook();

@@ -13,13 +13,12 @@ TransactionDetailsDialog::TransactionDetailsDialog(const QModelIndex& _index, QW
   m_ui(new Ui::TransactionDetailsDialog), m_detailsTemplate(
     "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
     "</style></head><body style=\" font-family:'Cantarell'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
-    "<span style=\" font-weight:600;\">Status: </span>%1</p><br>\n"
-    "<span style=\" font-weight:600;\">Date: </span>%2</p><br>\n"
-    "<span style=\" font-weight:600;\">To: </span>%4</p><br>\n"
-    "<span style=\" font-weight:600;\">Amount: </span>%5</p><br>\n"
-    "<span style=\" font-weight:600;\">Fee: </span>%6</p><br>\n"
-    "<span style=\" font-weight:600;\">Transaction hash: </span>%8</p><br><br>\n"
-    "<span style=\" font-weight:600;\">Messages: </span></p><br>%9<br><br>\n"
+    "<span style=\" font-weight:600;\">状態: </span>%1</p><br>\n"
+    "<span style=\" font-weight:600;\">日付: </span>%2</p><br>\n"
+    "<span style=\" font-weight:600;\">に: </span>%4</p><br>\n"
+    "<span style=\" font-weight:600;\">量: </span>%5</p><br>\n"
+    "<span style=\" font-weight:600;\">費用: </span>%6</p><br>\n"
+    "<span style=\" font-weight:600;\">トランザクションハッシュ: </span>%8</p><br><br>\n"
     "%10"
     "</body></html>") {
   m_ui->setupUi(this);
@@ -50,21 +49,21 @@ TransactionDetailsDialog::TransactionDetailsDialog(const QModelIndex& _index, QW
     QString depositSum = depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_SUM).data().toString() + " " +
       CurrencyAdapter::instance().getCurrencyTicker().toUpper();
     QString depositInfoTemplate =
-      "<span style=\" font-weight:600;\">Deposit info: </span></p><br>\n"
-      "<span style=\" font-weight:600;\">Status: </span>%1</p><br>\n"
-      "<span style=\" font-weight:600;\">Amount: </span>%2</p><br>\n"
-      "<span style=\" font-weight:600;\">Interest: </span>%3</p><br>\n"
-      "<span style=\" font-weight:600;\">Sum: </span>%4</p><br>\n"
-      "<span style=\" font-weight:600;\">Year interest rate: </span>%5</p><br>\n"
-      "<span style=\" font-weight:600;\">Term: </span>%6</p><br>\n"
-      "<span style=\" font-weight:600;\">Unlock height: </span>%7</p><br>\n"
-      "<span style=\" font-weight:600;\">Expected unlock time: </span>%8</p><br>\n"
-      "<span style=\" font-weight:600;\">Creating transaction: </span>%9</p><br>\n"
-      "<span style=\" font-weight:600;\">Creating height: </span>%10</p><br>\n"
-      "<span style=\" font-weight:600;\">Creating time: </span>%11</p><br>\n"
-      "<span style=\" font-weight:600;\">Spending transaction: </span>%12</p><br>\n"
-      "<span style=\" font-weight:600;\">Spending height: </span>%13</p><br>\n"
-      "<span style=\" font-weight:600;\">Spending time: </span>%14</p><br>\n";
+      "<span style=\" font-weight:600;\">銀行情報: </span></p><br>\n"
+      "<span style=\" font-weight:600;\">状態: </span>%1</p><br>\n"
+      "<span style=\" font-weight:600;\">量: </span>%2</p><br>\n"
+      "<span style=\" font-weight:600;\">PoV: </span>%3</p><br>\n"
+      "<span style=\" font-weight:600;\">和: </span>%4</p><br>\n"
+      "<span style=\" font-weight:600;\">年PoVレート: </span>%5</p><br>\n"
+      "<span style=\" font-weight:600;\">期間: </span>%6</p><br>\n"
+      "<span style=\" font-weight:600;\">ロック解除の高さ: </span>%7</p><br>\n"
+      "<span style=\" font-weight:600;\">予想されるロック解除時間: </span>%8</p><br>\n"
+      "<span style=\" font-weight:600;\">トランザクションの作成: </span>%9</p><br>\n"
+      "<span style=\" font-weight:600;\">高さを作成する: </span>%10</p><br>\n"
+      "<span style=\" font-weight:600;\">時間を作成する: </span>%11</p><br>\n"
+      "<span style=\" font-weight:600;\">支出取引: </span>%12</p><br>\n"
+      "<span style=\" font-weight:600;\">支出の高さ: </span>%13</p><br>\n"
+      "<span style=\" font-weight:600;\">時間を費やす: </span>%14</p><br>\n";
       depositInfo = depositInfoTemplate.
           arg(depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_STATE).data().toString()).
           arg(depositAmount).arg(depositInterest).arg(depositSum).
@@ -80,7 +79,7 @@ TransactionDetailsDialog::TransactionDetailsDialog(const QModelIndex& _index, QW
           arg(depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_SPENDING_TIME).data().toString());
   }
 
-  m_ui->m_detailsBrowser->setHtml(m_detailsTemplate.arg(QString("%1 confirmations").arg(numberOfConfirmations)).
+  m_ui->m_detailsBrowser->setHtml(m_detailsTemplate.arg(QString("%1 確認").arg(numberOfConfirmations)).
     arg(transactionIndex.sibling(transactionIndex.row(), TransactionsModel::COLUMN_DATE).data().toString()).arg(transactionIndex.sibling(transactionIndex.row(),
     TransactionsModel::COLUMN_ADDRESS).data().toString()).arg(amountText).arg(feeText).
     arg(transactionIndex.sibling(transactionIndex.row(), TransactionsModel::COLUMN_HASH).data().toString()).

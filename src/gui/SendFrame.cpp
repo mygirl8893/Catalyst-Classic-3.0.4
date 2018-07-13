@@ -78,7 +78,7 @@ void SendFrame::sendClicked() {
   Q_FOREACH (TransferFrame * transfer, m_transfers) {
     QString address = transfer->getAddress();
     if (!CurrencyAdapter::instance().validateAddress(address)) {
-      QCoreApplication::postEvent(&MainWindow::instance(), new ShowMessageEvent(tr("Invalid recipient address"), QtCriticalMsg));
+      QCoreApplication::postEvent(&MainWindow::instance(), new ShowMessageEvent(tr("無効な受信者アドレス"), QtCriticalMsg));
       return;
     }
 
@@ -95,7 +95,7 @@ void SendFrame::sendClicked() {
 
   quint64 fee = CurrencyAdapter::instance().parseAmount(m_ui->m_feeSpin->cleanText());
   if (fee < CurrencyAdapter::instance().getMinimumFee()) {
-    QCoreApplication::postEvent(&MainWindow::instance(), new ShowMessageEvent(tr("Incorrect fee value"), QtCriticalMsg));
+    QCoreApplication::postEvent(&MainWindow::instance(), new ShowMessageEvent(tr("間違った料金の値"), QtCriticalMsg));
     return;
   }
 

@@ -94,19 +94,17 @@ QVariant TransactionsModel::headerData(int _section, Qt::Orientation _orientatio
     case COLUMN_STATE:
       return QVariant();
     case COLUMN_DATE:
-      return tr("Date");
+      return tr("日付");
     case COLUMN_TYPE:
-      return tr("Type");
+      return tr("タイプ");
     case COLUMN_HASH:
-      return tr("Hash");
+      return tr("ハッシュ");
     case COLUMN_ADDRESS:
-      return tr("Address");
+      return tr("住所");
     case COLUMN_AMOUNT:
-      return tr("Amount");
+      return tr("量");
     case COLUMN_PAYMENT_ID:
-      return tr("PaymentID");
-    case COLUMN_MESSAGE:
-      return tr("Message");
+      return tr("ID 支払い");
     default:
       break;
     }
@@ -181,11 +179,11 @@ QModelIndex TransactionsModel::parent(const QModelIndex& _index) const {
 
 QByteArray TransactionsModel::toCsv() const {
   QByteArray res;
-  res.append("\"State\",\"Date\",\"Amount\",\"Fee\",\"Hash\",\"Height\",\"Address\",\"Payment ID\"\n");
+  res.append("\"状態\",\"日付\",\"量\",\"費用\",\"ハッシュ\",\"高さ\",\"住所\",\"ID 支払い\"\n");
   for (quint32 row = 0; row < rowCount(); ++row) {
     QModelIndex ind = index(row, COLUMN_STATE);
     quint64 numberOfConfirmations = ind.data(ROLE_NUMBER_OF_CONFIRMATIONS).value<quint64>();
-    QString text = (numberOfConfirmations == 0 ? tr("unconfirmed") : tr("confirmations"));
+    QString text = (numberOfConfirmations == 0 ? tr("未確認") : tr("確認"));
     res.append("\"").append(tr("%1 / %2").arg(numberOfConfirmations).arg(text).toUtf8()).append("\",");
     res.append("\"").append(ind.sibling(row, COLUMN_DATE).data().toString().toUtf8()).append("\",");
     res.append("\"").append(ind.sibling(row, COLUMN_AMOUNT).data().toString().toUtf8()).append("\",");
@@ -360,26 +358,6 @@ QVariant TransactionsModel::getUserRole(const QModelIndex& _index, int _role, Cr
 
   case ROLE_ROW:
     return _index.row();
-
-  case ROLE_MESSAGE: {
-    if (_transaction.messages.size() == 0) {
-      return QVariant();
-    }
-
-    QString messageString = Message(QString::fromStdString(_transaction.messages[0])).getMessage();
-    QTextStream messageStream(&messageString);
-    return messageStream.readLine();
-  }
-
-  case ROLE_MESSAGES: {
-    QStringList messageList;
-    messageList.reserve(_transaction.messages.size());
-    Q_FOREACH (const auto& message, _transaction.messages) {
-      messageList << QString::fromStdString(message);
-    }
-
-    return messageList;
-  }
 
   case ROLE_DEPOSIT_ID:
     return static_cast<quintptr>(_transaction.firstDepositId);

@@ -59,7 +59,7 @@ void ReceiveFrame::showKeyClicked() {
     return;
   }
 
-  m_ui->m_showKeyButton->setText(m_ui->m_showKeyButton->isChecked() ? tr("Hide private keys") : tr("Show private keys"));
+  m_ui->m_showKeyButton->setText(m_ui->m_showKeyButton->isChecked() ? tr("秘密鍵を隠す") : tr("秘密鍵を表示する"));
   m_ui->m_keyFrame->setVisible(m_ui->m_showKeyButton->isChecked());
 }
 

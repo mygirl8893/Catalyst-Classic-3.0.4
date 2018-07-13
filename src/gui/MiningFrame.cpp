@@ -31,7 +31,7 @@ MiningFrame::MiningFrame(QWidget* _parent) : QFrame(_parent), m_ui(new Ui::Minin
   initCpuCoreList();
 
   QString connection = Settings::instance().getConnection();
-  if (connection.compare("remote") == 0) {
+  if (connection.compare("遠隔の") == 0) {
     m_ui->m_startSolo->setDisabled(true);
   }
 
@@ -60,7 +60,7 @@ void MiningFrame::timerEvent(QTimerEvent* _event) {
     if (hashRate == 0) {
       return;
     }
-    m_ui->m_poolLabel->setText(tr("Mining in pool. Hashrate: %1 H/s").arg(hashRate));
+    m_ui->m_poolLabel->setText(tr("プールで採掘する。 ハッシュレート: %1 H/s").arg(hashRate));
     return;
   }
 
@@ -69,7 +69,7 @@ void MiningFrame::timerEvent(QTimerEvent* _event) {
     if (soloHashRate == 0) {
       return;
     }
-    m_ui->m_soloLabel->setText(tr("Mining solo. Hashrate: %1 H/s").arg(soloHashRate));
+    m_ui->m_soloLabel->setText(tr("ソロ鉱山。 ハッシュレート: %1 H/s").arg(soloHashRate));
     return;
   }
 
@@ -139,10 +139,10 @@ void MiningFrame::startMining() {
 
   m_miner = new Miner(this, poolUrl.host(), poolUrl.port(), m_walletAddress);
   connect(m_miner, &Miner::socketErrorSignal, this, [this](const QString& _errorString) {
-    m_ui->m_poolLabel->setText(tr("Error: %1").arg(_errorString));
+    m_ui->m_poolLabel->setText(tr("エラー: %1").arg(_errorString));
   });
 
-  m_ui->m_poolLabel->setText(tr("Starting..."));
+  m_ui->m_poolLabel->setText(tr("起動..."));
   m_miner->start(m_ui->m_cpuCombo->currentData().toUInt());
   m_hashRateTimerId = startTimer(HASHRATE_TIMER_INTERVAL);
   m_ui->m_poolCombo->setEnabled(false);
@@ -162,14 +162,14 @@ void MiningFrame::stopMining() {
   m_miner->stop();
   m_miner->deleteLater();
   m_miner = nullptr;
-  m_ui->m_poolLabel->setText(tr("Stopped"));
+  m_ui->m_poolLabel->setText(tr("停止"));
   m_ui->m_poolCombo->setEnabled(true);
   }
 }
 
 void MiningFrame::startSolo() {
   NodeAdapter::instance().startSoloMining(m_walletAddress, m_ui->m_cpuCombo->currentData().toUInt());
-  m_ui->m_soloLabel->setText(tr("Starting solo minining..."));
+  m_ui->m_soloLabel->setText(tr("ソロマイニングの開始..."));
   m_soloHashRateTimerId = startTimer(HASHRATE_TIMER_INTERVAL);
 
   m_ui->m_startSolo->setEnabled(false);
@@ -182,7 +182,7 @@ void MiningFrame::stopSolo() {
   killTimer(m_soloHashRateTimerId);
   m_soloHashRateTimerId = -1;
   NodeAdapter::instance().stopSoloMining();
-  m_ui->m_soloLabel->setText(tr("Stopped"));
+  m_ui->m_soloLabel->setText(tr("停止"));
   }
 }
 

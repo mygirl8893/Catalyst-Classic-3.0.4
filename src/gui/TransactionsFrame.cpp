@@ -34,7 +34,7 @@ void TransactionsFrame::scrollToTransaction(const QModelIndex& _index) {
 }
 
 void TransactionsFrame::exportToCsv() {
-  QString file = QFileDialog::getSaveFileName(&MainWindow::instance(), tr("Select CSV file"), QDir::homePath(), "CSV (*.csv)");
+  QString file = QFileDialog::getSaveFileName(&MainWindow::instance(), tr("CSVファイルを選択"), QDir::homePath(), "CSV (*.csv)");
   if (!file.isEmpty()) {
     QByteArray csv = TransactionsModel::instance().toCsv();
     QFile f(file);
