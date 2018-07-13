@@ -144,44 +144,6 @@
      </widget>
     </item>
     <item row="0" column="0">
-     <widget class="WalletGui::MessagesFrame" name="m_messagesFrame">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="WalletGui::SendMessageFrame" name="m_sendMessageFrame">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
      <widget class="WalletGui::MiningFrame" name="m_miningFrame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -321,8 +283,6 @@
    <addaction name="m_transactionsAction"/>
    <addaction name="m_sendAction"/>
    <addaction name="m_receiveAction"/>
-   <addaction name="m_messagesAction"/>
-   <addaction name="m_sendMessageAction"/>
    <addaction name="m_addressBookAction"/>
    <addaction name="m_miningAction"/>
   </widget>
@@ -494,36 +454,6 @@
    </property>
    <property name="text">
     <string>トレイの近く</string>
-   </property>
-  </action>
-  <action name="m_messagesAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../resources.qrc">
-     <normaloff>:/icons/messages</normaloff>:/icons/messages</iconset>
-   </property>
-   <property name="text">
-    <string>メッセージ</string>
-   </property>
-  </action>
-  <action name="m_sendMessageAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../resources.qrc">
-     <normaloff>:/icons/send_message</normaloff>:/icons/send_message</iconset>
-   </property>
-   <property name="text">
-    <string>メッセージを送る</string>
    </property>
   </action>
   <action name="m_importKeyAction">
@@ -861,38 +791,6 @@
     <hint type="destinationlabel">
      <x>459</x>
      <y>299</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_messagesAction</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>m_messagesFrame</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>843</x>
-     <y>322</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_sendMessageAction</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>m_sendMessageFrame</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>854</x>
-     <y>322</y>
     </hint>
    </hints>
   </connection>
