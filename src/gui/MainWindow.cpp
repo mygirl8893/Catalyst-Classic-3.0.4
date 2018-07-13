@@ -69,7 +69,7 @@ void MainWindow::connectToSignals() {
   });
   connect(&NodeAdapter::instance(), &NodeAdapter::peerCountUpdatedSignal, this, &MainWindow::peerCountUpdated, Qt::QueuedConnection);
   connect(m_ui->m_exitAction, &QAction::triggered, qApp, &QApplication::quit);
-  connect(m_ui->m_messagesFrame, &MessagesFrame::replyToSignal, this, &MainWindow::replyTo);
+  //connect(m_ui->m_messagesFrame, &MessagesFrame::replyToSignal, this, &MainWindow::replyTo);
   connect(m_ui->m_addressBookFrame, &AddressBookFrame::payToSignal, this, &MainWindow::payTo);
 }
 
@@ -98,8 +98,8 @@ void MainWindow::initUi() {
   m_tabActionGroup->addAction(m_ui->m_receiveAction);
   m_tabActionGroup->addAction(m_ui->m_transactionsAction);
   m_tabActionGroup->addAction(m_ui->m_addressBookAction);
-  m_tabActionGroup->addAction(m_ui->m_messagesAction);
-  m_tabActionGroup->addAction(m_ui->m_sendMessageAction);
+  //m_tabActionGroup->addAction(m_ui->m_messagesAction);
+  //m_tabActionGroup->addAction(m_ui->m_sendMessageAction);
   m_tabActionGroup->addAction(m_ui->m_miningAction);
   m_tabActionGroup->addAction(m_ui->m_depositsAction);
 
