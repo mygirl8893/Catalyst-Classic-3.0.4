@@ -104,14 +104,14 @@
       <item row="4" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Total:</string>
+         <string>全額:</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0" colspan="2">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Unconfirmed:</string>
+         <string>未確認取引:</string>
         </property>
        </widget>
       </item>
@@ -155,14 +155,14 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Balance:</string>
+         <string>バランス:</string>
         </property>
        </widget>
       </item>
       <item row="8" column="0">
        <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Unlocked:</string>
+         <string>ロックされていない:</string>
         </property>
        </widget>
       </item>
@@ -243,14 +243,14 @@
          </font>
         </property>
         <property name="text">
-         <string>Deposits</string>
+         <string>銀行声明</string>
         </property>
        </widget>
       </item>
       <item row="7" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Locked:</string>
+         <string>ロックされた:</string>
         </property>
        </widget>
       </item>
@@ -264,7 +264,7 @@
       <item row="10" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>Total:</string>
+         <string>合計金額:</string>
         </property>
        </widget>
       </item>
@@ -300,7 +300,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Wallet</string>
+         <string>財布</string>
         </property>
        </widget>
       </item>
@@ -362,7 +362,7 @@
            </font>
           </property>
           <property name="text">
-           <string>Recent transactions</string>
+           <string>最近の取引</string>
           </property>
          </widget>
         </item>
