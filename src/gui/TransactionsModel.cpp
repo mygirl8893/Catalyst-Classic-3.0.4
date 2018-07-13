@@ -105,8 +105,6 @@ QVariant TransactionsModel::headerData(int _section, Qt::Orientation _orientatio
       return tr("Amount");
     case COLUMN_PAYMENT_ID:
       return tr("PaymentID");
-    case COLUMN_MESSAGE:
-      return tr("Message");
     default:
       break;
     }
@@ -245,12 +243,6 @@ QVariant TransactionsModel::getDisplayRole(const QModelIndex& _index) const {
     return QString::number(transactionHeight);
   }
 
-  case COLUMN_MESSAGE: {
-    QString messageString = _index.data(ROLE_MESSAGE).toString();
-    QTextStream messageStream(&messageString);
-    return messageStream.readLine();
-  }
-
   default:
     break;
   }
@@ -360,26 +352,6 @@ QVariant TransactionsModel::getUserRole(const QModelIndex& _index, int _role, Cr
 
   case ROLE_ROW:
     return _index.row();
-
-  case ROLE_MESSAGE: {
-    if (_transaction.messages.size() == 0) {
-      return QVariant();
-    }
-
-    QString messageString = Message(QString::fromStdString(_transaction.messages[0])).getMessage();
-    QTextStream messageStream(&messageString);
-    return messageStream.readLine();
-  }
-
-  case ROLE_MESSAGES: {
-    QStringList messageList;
-    messageList.reserve(_transaction.messages.size());
-    Q_FOREACH (const auto& message, _transaction.messages) {
-      messageList << QString::fromStdString(message);
-    }
-
-    return messageList;
-  }
 
   case ROLE_DEPOSIT_ID:
     return static_cast<quintptr>(_transaction.firstDepositId);

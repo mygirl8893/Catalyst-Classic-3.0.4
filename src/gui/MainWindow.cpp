@@ -69,7 +69,7 @@ void MainWindow::connectToSignals() {
   });
   connect(&NodeAdapter::instance(), &NodeAdapter::peerCountUpdatedSignal, this, &MainWindow::peerCountUpdated, Qt::QueuedConnection);
   connect(m_ui->m_exitAction, &QAction::triggered, qApp, &QApplication::quit);
-  connect(m_ui->m_messagesFrame, &MessagesFrame::replyToSignal, this, &MainWindow::replyTo);
+  //connect(m_ui->m_messagesFrame, &MessagesFrame::replyToSignal, this, &MainWindow::replyTo);
   connect(m_ui->m_addressBookFrame, &AddressBookFrame::payToSignal, this, &MainWindow::payTo);
 }
 
@@ -88,8 +88,8 @@ void MainWindow::initUi() {
   m_ui->m_receiveFrame->hide();
   m_ui->m_transactionsFrame->hide();
   m_ui->m_addressBookFrame->hide();
-  m_ui->m_messagesFrame->hide();
-  m_ui->m_sendMessageFrame->hide();
+  //m_ui->m_messagesFrame->hide();
+  //m_ui->m_sendMessageFrame->hide();
   m_ui->m_miningFrame->hide();
   m_ui->m_depositsFrame->hide();
 
@@ -98,8 +98,8 @@ void MainWindow::initUi() {
   m_tabActionGroup->addAction(m_ui->m_receiveAction);
   m_tabActionGroup->addAction(m_ui->m_transactionsAction);
   m_tabActionGroup->addAction(m_ui->m_addressBookAction);
-  m_tabActionGroup->addAction(m_ui->m_messagesAction);
-  m_tabActionGroup->addAction(m_ui->m_sendMessageAction);
+  //m_tabActionGroup->addAction(m_ui->m_messagesAction);
+  //m_tabActionGroup->addAction(m_ui->m_sendMessageAction);
   m_tabActionGroup->addAction(m_ui->m_miningAction);
   m_tabActionGroup->addAction(m_ui->m_depositsAction);
 
@@ -458,8 +458,8 @@ void MainWindow::walletClosed() {
   m_ui->m_sendFrame->hide();
   m_ui->m_transactionsFrame->hide();
   m_ui->m_addressBookFrame->hide();
-  m_ui->m_messagesFrame->hide();
-  m_ui->m_sendMessageFrame->hide();
+  //m_ui->m_messagesFrame->hide();
+  //m_ui->m_sendMessageFrame->hide();
   m_ui->m_miningFrame->hide();
   m_ui->m_depositsFrame->hide();
   m_ui->m_resetAction->setEnabled(false);
@@ -471,10 +471,10 @@ void MainWindow::walletClosed() {
   }
 }
 
-void MainWindow::replyTo(const QModelIndex& _index) {
-  m_ui->m_sendMessageFrame->setAddress(_index.data(MessagesModel::ROLE_HEADER_REPLY_TO).toString());
-  m_ui->m_sendMessageAction->trigger();
-}
+//void MainWindow::replyTo(const QModelIndex& _index) {
+  //m_ui->m_sendMessageFrame->setAddress(_index.data(MessagesModel::ROLE_HEADER_REPLY_TO).toString());
+  //m_ui->m_sendMessageAction->trigger();
+//}
 
 void MainWindow::payTo(const QModelIndex& _index) {
   m_ui->m_sendFrame->setAddress(_index.data(AddressBookModel::ROLE_ADDRESS).toString());

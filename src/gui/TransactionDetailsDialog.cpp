@@ -19,7 +19,6 @@ TransactionDetailsDialog::TransactionDetailsDialog(const QModelIndex& _index, QW
     "<span style=\" font-weight:600;\">Amount: </span>%5</p><br>\n"
     "<span style=\" font-weight:600;\">Fee: </span>%6</p><br>\n"
     "<span style=\" font-weight:600;\">Transaction hash: </span>%8</p><br><br>\n"
-    "<span style=\" font-weight:600;\">Messages: </span></p><br>%9<br><br>\n"
     "%10"
     "</body></html>") {
   m_ui->setupUi(this);
@@ -53,9 +52,9 @@ TransactionDetailsDialog::TransactionDetailsDialog(const QModelIndex& _index, QW
       "<span style=\" font-weight:600;\">Deposit info: </span></p><br>\n"
       "<span style=\" font-weight:600;\">Status: </span>%1</p><br>\n"
       "<span style=\" font-weight:600;\">Amount: </span>%2</p><br>\n"
-      "<span style=\" font-weight:600;\">Interest: </span>%3</p><br>\n"
+      "<span style=\" font-weight:600;\">PoV: </span>%3</p><br>\n"
       "<span style=\" font-weight:600;\">Sum: </span>%4</p><br>\n"
-      "<span style=\" font-weight:600;\">Year interest rate: </span>%5</p><br>\n"
+      "<span style=\" font-weight:600;\">Year PoV rate: </span>%5</p><br>\n"
       "<span style=\" font-weight:600;\">Term: </span>%6</p><br>\n"
       "<span style=\" font-weight:600;\">Unlock height: </span>%7</p><br>\n"
       "<span style=\" font-weight:600;\">Expected unlock time: </span>%8</p><br>\n"
