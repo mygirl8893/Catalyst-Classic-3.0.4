@@ -23,17 +23,17 @@ Q_DECL_CONSTEXPR quint32 SECONDS_IN_YEAR = 12 * SECONDS_IN_MONTH;
 QString secondsToNativeTime(int _seconds) {
   QString resTempate("~ %1 %2");
   if (_seconds < SECONDS_IN_MINUTE) {
-    return resTempate.arg(_seconds).arg(QObject::tr("seconds"));
+    return resTempate.arg(_seconds).arg(QObject::tr("秒"));
   } else if (_seconds < SECONDS_IN_HOUR) {
-    return resTempate.arg(_seconds / SECONDS_IN_MINUTE).arg(QObject::tr("minutes"));
+    return resTempate.arg(_seconds / SECONDS_IN_MINUTE).arg(QObject::tr("分"));
   } else if (_seconds < SECONDS_IN_DAY) {
-    return resTempate.arg(_seconds / SECONDS_IN_HOUR).arg(QObject::tr("hours"));
+    return resTempate.arg(_seconds / SECONDS_IN_HOUR).arg(QObject::tr("時間"));
   } else if (_seconds < SECONDS_IN_MONTH) {
-    return resTempate.arg(_seconds / SECONDS_IN_DAY).arg(QObject::tr("days"));
+    return resTempate.arg(_seconds / SECONDS_IN_DAY).arg(QObject::tr("日々"));
   } else if (_seconds < SECONDS_IN_YEAR) {
-    return resTempate.arg(_seconds / SECONDS_IN_MONTH).arg(QObject::tr("months"));
+    return resTempate.arg(_seconds / SECONDS_IN_MONTH).arg(QObject::tr("数ヶ月"));
   } else {
-    return resTempate.arg(_seconds / SECONDS_IN_YEAR).arg(QObject::tr("years"));
+    return resTempate.arg(_seconds / SECONDS_IN_YEAR).arg(QObject::tr("年"));
   }
 
   return QString();

@@ -75,33 +75,33 @@ QVariant DepositModel::headerData(int _section, Qt::Orientation _orientation, in
   case Qt::DisplayRole:
     switch(_section) {
     case COLUMN_STATE:
-      return tr("Status");
+      return tr("状態");
     case COLUMN_AMOUNT:
-      return tr("Amount");
+      return tr("金額");
     case COLUMN_INTEREST:
       return tr("PoV");
     case COLUMN_SUM:
-      return tr("Sum");
+      return tr("和");
     case COLUMN_YEAR_RATE:
-      return tr("Rate");
+      return tr("料金");
     case COLUMN_TERM:
-      return tr("Term");
+      return tr("期間");
     case COLUMN_UNLOCK_HEIGHT:
-      return tr("Unlock height");
+      return tr("ロック解除の高さ");
     case COLUMN_UNLOCK_TIME:
-      return tr("Unlock time");
+      return tr("ロック解除時間");
     case COLUMN_CREATRING_TRANSACTION_HASH:
-      return tr("Creating transaction");
+      return tr("トランザクションの作成");
     case COLUMN_CREATING_HEIGHT:
-      return tr("Creating height");
+      return tr("高さを作成する");
     case COLUMN_CREATING_TIME:
-      return tr("Creating time");
+      return tr("時間を作成する");
     case COLUMN_SPENDING_TRANSACTION_HASH:
-      return tr("Spending transaction");
+      return tr("支出取引");
     case COLUMN_SPENDING_HEIGHT:
-      return tr("Spending height");
+      return tr("支出の高さ");
     case COLUMN_SPENDING_TIME:
-      return tr("Spending time");
+      return tr("時間を費やす");
     default:
       break;
     }
@@ -159,11 +159,11 @@ QVariant DepositModel::getDisplayRole(const QModelIndex& _index) const {
     DepositState depositState = static_cast<DepositState>(_index.data(ROLE_STATE).toInt());
     switch (depositState) {
     case STATE_LOCKED:
-      return tr("Locked");
+      return tr("ロックされた");
     case STATE_UNLOCKED:
-      return tr("Unlocked");
+      return tr("ロックされていない");
     case STATE_SPENT:
-      return tr("Spent");
+      return tr("過ごした");
     }
   }
 

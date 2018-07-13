@@ -50,14 +50,14 @@
          </font>
         </property>
         <property name="text">
-         <string>Deposits</string>
+         <string>バンク</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>Locked:</string>
+         <string>ロックされた:</string>
         </property>
        </widget>
       </item>
@@ -87,7 +87,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>Unlocked:</string>
+         <string>ロックされていない:</string>
         </property>
        </widget>
       </item>
@@ -160,7 +160,7 @@
       <item row="4" column="4">
        <widget class="QPushButton" name="m_withdrawButton">
         <property name="text">
-         <string>Withdraw</string>
+         <string>撤退</string>
         </property>
        </widget>
       </item>
@@ -210,14 +210,14 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Time:</string>
+         <string>時間:</string>
         </property>
        </widget>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Amount:</string>
+         <string>量:</string>
         </property>
        </widget>
       </item>
@@ -244,7 +244,7 @@
       <item row="2" column="2" alignment="Qt::AlignLeft">
        <widget class="QPushButton" name="m_depositButton">
         <property name="text">
-         <string>Deposit</string>
+         <string>バンク</string>
         </property>
        </widget>
       </item>
