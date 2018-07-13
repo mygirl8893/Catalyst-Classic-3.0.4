@@ -243,12 +243,6 @@ QVariant TransactionsModel::getDisplayRole(const QModelIndex& _index) const {
     return QString::number(transactionHeight);
   }
 
-  case COLUMN_MESSAGE: {
-    QString messageString = _index.data(ROLE_MESSAGE).toString();
-    QTextStream messageStream(&messageString);
-    return messageStream.readLine();
-  }
-
   default:
     break;
   }
