@@ -81,7 +81,7 @@ void MainWindow::initUi() {
     connect(m_trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::trayActivated);
   }
 #endif
-  m_ui->m_aboutCryptonoteAction->setText(QString(tr("About %1 Wallet")).arg(CurrencyAdapter::instance().getCurrencyDisplayName()));
+  m_ui->m_aboutCryptonoteAction->setText(QString(tr("約 %1 Wallet")).arg(CurrencyAdapter::instance().getCurrencyDisplayName()));
 
   m_ui->m_overviewFrame->hide();
   m_ui->m_sendFrame->hide();
@@ -213,7 +213,7 @@ bool MainWindow::event(QEvent* _event) {
 }
 
 void MainWindow::createWallet() {
-  QString filePath = QFileDialog::getSaveFileName(this, tr("New wallet file"),
+  QString filePath = QFileDialog::getSaveFileName(this, tr("新しいウォレットファイル"),
   #ifdef Q_OS_WIN
       //QApplication::applicationDirPath(),
         QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
@@ -239,7 +239,7 @@ void MainWindow::createWallet() {
 }
 
 void MainWindow::openWallet() {
-  QString filePath = QFileDialog::getOpenFileName(this, tr("Open .wallet/.keys file"),
+  QString filePath = QFileDialog::getOpenFileName(this, tr("開いた .wallet/.keys ファイル"),
 #ifdef Q_OS_WIN
     //QApplication::applicationDirPath(),
       QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
@@ -251,8 +251,8 @@ void MainWindow::openWallet() {
   if (!filePath.isEmpty()) {
 
     if (QFile::exists(filePath) && (!filePath.endsWith(".keys") && !filePath.endsWith(".wallet") && !filePath.endsWith(".trackingwallet"))) {
-      QMessageBox::warning(this, tr("Wrong wallet file extension"),
-                                 tr("Wrong wallet file extension, wallet file should have \".wallet\", \".keys\" or \".trackingwallet\" extension."), QMessageBox::Ok);
+      QMessageBox::warning(this, tr("間違ったWalletファイルの拡張子"),
+                                 tr("間違ったウォレットファイルの拡張子、ウォレットファイルには必要があります \".wallet\", \".keys\" or \".trackingwallet\" 拡張."), QMessageBox::Ok);
       return;
     }
 
@@ -290,13 +290,13 @@ void MainWindow::importKey() {
       WalletAdapter::instance().setWalletFile(filePath);
       WalletAdapter::instance().createWithKeys(keys);
     } else {
-      QMessageBox::warning(this, tr("Wallet keys are not valid"), tr("The private keys you entered are not valid."), QMessageBox::Ok);
+      QMessageBox::warning(this, tr("ウォレットキーが無効です"), tr("入力した秘密鍵は無効です."), QMessageBox::Ok);
     }
   }
 }
 
 void MainWindow::backupWallet() {
-  QString filePath = QFileDialog::getSaveFileName(this, tr("Backup wallet to..."),
+  QString filePath = QFileDialog::getSaveFileName(this, tr("バックアップウォレットから..."),
   #ifdef Q_OS_WIN
       //QApplication::applicationDirPath(),
         QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
@@ -316,8 +316,8 @@ void MainWindow::backupWallet() {
 
 void MainWindow::resetWallet() {
   Q_ASSERT(WalletAdapter::instance().isOpen());
-  if (QMessageBox::warning(this, tr("Warning"), tr("Your wallet will be reset and restored from blockchain.\n"
-    "Are you sure?"), QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
+  if (QMessageBox::warning(this, tr("警告"), tr("あなたの財布はリセットされ、ブロックチェーンから復元されます.\n"
+    "本気ですか？?"), QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
     WalletAdapter::instance().reset();
     WalletAdapter::instance().open("");
   }
@@ -382,7 +382,7 @@ void MainWindow::setStatusBarText(const QString& _text) {
 void MainWindow::showMessage(const QString& _text, QtMsgType _type) {
   switch (_type) {
   case QtCriticalMsg:
-    QMessageBox::critical(this, tr("Wallet error"), _text);
+    QMessageBox::critical(this, tr("ウォレットのエラー"), _text);
     break;
   case QtDebugMsg:
     QMessageBox::information(this, tr("Wallet"), _text);
@@ -406,7 +406,7 @@ void MainWindow::encryptedFlagChanged(bool _encrypted) {
   QString encryptionIconPath = _encrypted ? ":icons/encrypted" : ":icons/decrypted";
   QPixmap encryptionIcon = QPixmap(encryptionIconPath).scaled(16, 16, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
   m_encryptionStateIconLabel->setPixmap(encryptionIcon);
-  QString encryptionLabelTooltip = _encrypted ? tr("Encrypted") : tr("Not encrypted");
+  QString encryptionLabelTooltip = _encrypted ? tr("暗号化された") : tr("暗号化されない");
   m_encryptionStateIconLabel->setToolTip(encryptionLabelTooltip);
 }
 
@@ -414,19 +414,19 @@ void MainWindow::peerCountUpdated(quint64 _peerCount) {
   QString connectionIconPath = _peerCount > 0 ? ":icons/connected" : ":icons/disconnected";
   QPixmap connectionIcon = QPixmap(connectionIconPath).scaled(16, 16, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
   m_connectionStateIconLabel->setPixmap(connectionIcon);
-  m_connectionStateIconLabel->setToolTip(QString(tr("%1 peers").arg(_peerCount)));
+  m_connectionStateIconLabel->setToolTip(QString(tr("%1 同僚").arg(_peerCount)));
 }
 
 void MainWindow::walletSynchronizationInProgress() {
   qobject_cast<AnimatedLabel*>(m_synchronizationStateIconLabel)->startAnimation();
-  m_synchronizationStateIconLabel->setToolTip(tr("Synchronization in progress"));
+  m_synchronizationStateIconLabel->setToolTip(tr("同期の進行中"));
 }
 
 void MainWindow::walletSynchronized(int _error, const QString& _error_text) {
   QPixmap syncIcon = QPixmap(":icons/synced").scaled(16, 16, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
   qobject_cast<AnimatedLabel*>(m_synchronizationStateIconLabel)->stopAnimation();
   m_synchronizationStateIconLabel->setPixmap(syncIcon);
-  QString syncLabelTooltip = _error > 0 ? tr("Not synchronized") : tr("Synchronized");
+  QString syncLabelTooltip = _error > 0 ? tr("同期されていない") : tr("同期された");
   m_synchronizationStateIconLabel->setToolTip(syncLabelTooltip);
 }
 
