@@ -38,7 +38,7 @@ std::string convertPaymentId(const std::string& paymentIdString) {
   Crypto::Hash paymentId;
   if (!parsePaymentId(paymentIdString, paymentId)) {
     std::stringstream errorStr;
-    errorStr << "Payment id has invalid format: \"" + paymentIdString + "\", expected 64-character string";
+    errorStr << "お支払いIDのフォーマットが無効です: \"" + paymentIdString + "\", 予想される64文字の文字列";
     throw std::runtime_error(errorStr.str());
   }
 
@@ -47,7 +47,7 @@ std::string convertPaymentId(const std::string& paymentIdString) {
   CryptoNote::setPaymentIdToTransactionExtraNonce(extraNonce, paymentId);
   if (!CryptoNote::addExtraNonceToTransactionExtra(extra, extraNonce)) {
     std::stringstream errorStr;
-    errorStr << "Something went wrong with payment_id. Please check its format: \"" + paymentIdString + "\", expected 64-character string";
+    errorStr << "payment_idで何か問題が発生しました。 形式を確認してください: \"" + paymentIdString + "\", 予想される64文字の文字列";
     throw std::runtime_error(errorStr.str());
   }
 
@@ -60,7 +60,7 @@ std::string extractPaymentId(const std::string& extra) {
   std::copy(extra.begin(), extra.end(), std::back_inserter(extraVector));
 
   if (!CryptoNote::parseTransactionExtra(extraVector, extraFields)) {
-    throw std::runtime_error("Can't parse extra");
+    throw std::runtime_error("余分に解析できません");
   }
 
   std::string result;
@@ -83,12 +83,12 @@ inline std::string interpret_rpc_response(bool ok, const std::string& status) {
   std::string err;
   if (ok) {
     if (status == CORE_RPC_STATUS_BUSY) {
-      err = "daemon is busy. Please try later";
+      err = "デーモンはビジーです。 後でお試しください";
     } else if (status != CORE_RPC_STATUS_OK) {
       err = status;
     }
   } else {
-    err = "possible lost connection to daemon";
+    err = "デーモンとの接続が失われる可能性がある";
   }
   return err;
 }
@@ -139,14 +139,14 @@ public:
 
         std::string err = interpret_rpc_response(true, res.status);
         if (err.empty())
-          qDebug() << "Mining started in daemon";
+          qDebug() << "デーモンで鉱業が始まった";
         else
-          qDebug() << "Mining has NOT been started: " << QString::fromStdString(err);
+          qDebug() << "鉱業は開始されていない: " << QString::fromStdString(err);
 
       } catch (const CryptoNote::ConnectException&) {
-        qDebug() << "Wallet failed to connect to daemon.";
+        qDebug() << "Walletがデーモンに接続できませんでした.";
       } catch (const std::exception& e) {
-        qDebug() << "Failed to invoke rpc method: " << e.what();
+        qDebug() << "rpcメソッドの呼び出しに失敗しました: " << e.what();
       }
   }
 
@@ -160,13 +160,13 @@ public:
           CryptoNote::invokeJsonCommand(httpClient, "/stop_mining", req, res);
           std::string err = interpret_rpc_response(true, res.status);
           if (err.empty())
-            qDebug() << "Mining stopped in daemon";
+            qDebug() << "デーモンで停止した鉱山";
           else
-            qDebug() << "Mining has NOT been stopped: " << QString::fromStdString(err);
+            qDebug() << "鉱業は停止していない: " << QString::fromStdString(err);
         } catch (const CryptoNote::ConnectException&) {
-          qDebug() << "Wallet failed to connect to daemon.";
+          qDebug() << "Walletがデーモンに接続できませんでした.";
         } catch (const std::exception& e) {
-          qDebug() << "Failed to invoke rpc method: " << e.what();
+          qDebug() << "rpcメソッドの呼び出しに失敗しました: " << e.what();
         }
   }
 
@@ -204,14 +204,14 @@ public:
       if (err.empty())
         return res.difficulty;
       else {
-        qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+        qDebug() << "要求の呼び出しに失敗しました: " << QString::fromStdString(err);
         return 0;
       }}
         catch (const CryptoNote::ConnectException&) {
-        qDebug() << "Wallet failed to connect to daemon.";
+        qDebug() << "Walletがデーモンに接続できませんでした.";
         return 0;
       } catch (const std::exception& e) {
-        qDebug() << "Failed to invoke rpc method: " << e.what();
+        qDebug() << "rpcメソッドの呼び出しに失敗しました: " << e.what();
         return 0;
       }
   }
@@ -226,14 +226,14 @@ public:
         if (err.empty())
           return res.tx_count;
         else {
-          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          qDebug() << "要求の呼び出しに失敗しました: " << QString::fromStdString(err);
           return 0;
         }}
           catch (const CryptoNote::ConnectException&) {
-          qDebug() << "Wallet failed to connect to daemon.";
+          qDebug() << "Walletがデーモンに接続できませんでした.";
           return 0;
         } catch (const std::exception& e) {
-          qDebug() << "Failed to invoke rpc method: " << e.what();
+          qDebug() << "rpcメソッドの呼び出しに失敗しました: " << e.what();
           return 0;
         }
   }
@@ -248,14 +248,14 @@ public:
         if (err.empty())
           return res.tx_pool_size;
         else {
-          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          qDebug() << "要求の呼び出しに失敗しました: " << QString::fromStdString(err);
           return 0;
         }}
           catch (const CryptoNote::ConnectException&) {
-          qDebug() << "Wallet failed to connect to daemon.";
+          qDebug() << "Walletがデーモンに接続できませんでした.";
           return 0;
         } catch (const std::exception& e) {
-          qDebug() << "Failed to invoke rpc method: " << e.what();
+          qDebug() << "rpcメソッドの呼び出しに失敗しました: " << e.what();
           return 0;
         }
   }
@@ -270,14 +270,14 @@ public:
         if (err.empty())
           return res.alt_blocks_count;
         else {
-          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          qDebug() << "要求の呼び出しに失敗しました: " << QString::fromStdString(err);
           return 0;
         }}
           catch (const CryptoNote::ConnectException&) {
-          qDebug() << "Wallet failed to connect to daemon.";
+          qDebug() << "Walletがデーモンに接続できませんでした.";
           return 0;
         } catch (const std::exception& e) {
-          qDebug() << "Failed to invoke rpc method: " << e.what();
+          qDebug() << "rpcメソッドの呼び出しに失敗しました: " << e.what();
           return 0;
         }
   }
@@ -292,14 +292,14 @@ public:
         if (err.empty())
           return res.outgoing_connections_count + res.incoming_connections_count;
         else {
-          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          qDebug() << "要求の呼び出しに失敗しました: " << QString::fromStdString(err);
           return 0;
         }}
           catch (const CryptoNote::ConnectException&) {
-          qDebug() << "Wallet failed to connect to daemon.";
+          qDebug() << "Walletがデーモンに接続できませんでした.";
           return 0;
         } catch (const std::exception& e) {
-          qDebug() << "Failed to invoke rpc method: " << e.what();
+          qDebug() << "rpcメソッドの呼び出しに失敗しました: " << e.what();
           return 0;
         }
   }
@@ -314,14 +314,14 @@ public:
         if (err.empty())
           return res.outgoing_connections_count;
         else {
-          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          qDebug() << "要求の呼び出しに失敗しました: " << QString::fromStdString(err);
           return 0;
         }}
           catch (const CryptoNote::ConnectException&) {
-          qDebug() << "Wallet failed to connect to daemon.";
+          qDebug() << "Walletがデーモンに接続できませんでした.";
           return 0;
         } catch (const std::exception& e) {
-          qDebug() << "Failed to invoke rpc method: " << e.what();
+          qDebug() << "rpcメソッドの呼び出しに失敗しました: " << e.what();
           return 0;
         }
   }
@@ -336,14 +336,14 @@ public:
         if (err.empty())
           return res.incoming_connections_count;
         else {
-          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          qDebug() << "要求の呼び出しに失敗しました: " << QString::fromStdString(err);
           return 0;
         }}
           catch (const CryptoNote::ConnectException&) {
-          qDebug() << "Wallet failed to connect to daemon.";
+          qDebug() << "Walletがデーモンに接続できませんでした.";
           return 0;
         } catch (const std::exception& e) {
-          qDebug() << "Failed to invoke rpc method: " << e.what();
+          qDebug() << "rpcメソッドの呼び出しに失敗しました: " << e.what();
           return 0;
         }
   }
@@ -358,14 +358,14 @@ public:
         if (err.empty())
           return res.white_peerlist_size;
         else {
-          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          qDebug() << "要求の呼び出しに失敗しました: " << QString::fromStdString(err);
           return 0;
         }}
           catch (const CryptoNote::ConnectException&) {
-          qDebug() << "Wallet failed to connect to daemon.";
+          qDebug() << "Walletがデーモンに接続できませんでした.";
           return 0;
         } catch (const std::exception& e) {
-          qDebug() << "Failed to invoke rpc method: " << e.what();
+          qDebug() << "rpcメソッドの呼び出しに失敗しました: " << e.what();
           return 0;
         }
   }
@@ -380,14 +380,14 @@ public:
         if (err.empty())
           return res.grey_peerlist_size;
         else {
-          qDebug() << "Failed to invoke request: " << QString::fromStdString(err);
+          qDebug() << "要求の呼び出しに失敗しました: " << QString::fromStdString(err);
           return 0;
         }}
           catch (const CryptoNote::ConnectException&) {
-          qDebug() << "Wallet failed to connect to daemon.";
+          qDebug() << "Walletがデーモンに接続できませんでした.";
           return 0;
         } catch (const std::exception& e) {
-          qDebug() << "Failed to invoke rpc method: " << e.what();
+          qDebug() << "rpcメソッドの呼び出しに失敗しました: " << e.what();
           return 0;
         }
   }

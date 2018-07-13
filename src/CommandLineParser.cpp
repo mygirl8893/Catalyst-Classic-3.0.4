@@ -7,22 +7,22 @@ namespace WalletGui {
 
 CommandLineParser::CommandLineParser(QObject* _parent) : QObject(_parent), m_parser(), m_helpOption(m_parser.addHelpOption()),
   m_versionOption(m_parser.addVersionOption()),
-  m_testnetOption("testnet", tr("Used to deploy test nets. Checkpoints and hardcoded seeds are ignored, network id is changed. "
-    "Use it with –data-dir flag. The wallet must be launched with –testnet flag")),
-  m_p2pBindIpOption("p2p-bind-ip", tr("Interface for p2p network protocol"), tr("ip"), "0.0.0.0"),
-  m_p2pBindPortOption("p2p-bind-port", tr("Port for p2p network protocol"), tr("port"), QString::number(P2P_DEFAULT_PORT)),
-  m_p2pExternalOption("p2p-external-port", tr("External port for p2p network protocol (if port forwarding used with NAT)"),
+  m_testnetOption("testnet", tr("テストネットを展開するために使用されます。 チェックポイントとハードコードされたシードは無視され、ネットワークIDが変更されます。 "
+     "-data-dirフラグとともに使用します。ウォレットは-testnetフラグで起動する必要があります")),
+  m_p2pBindIpOption("p2p-bind-ip", tr("P2Pネットワークプロトコルのインタフェース"), tr("ip"), "0.0.0.0"),
+  m_p2pBindPortOption("p2p-bind-port", tr("P2Pネットワークプロトコル用ポート"), tr("port"), QString::number(P2P_DEFAULT_PORT)),
+  m_p2pExternalOption("p2p-external-port", tr("p2pネットワークプロトコルの外部ポート（NATでポート転送を使用している場合）"),
     tr("port"), 0),
-  m_allowLocalIpOption("allow-local-ip", tr("Allow local ip add to peer list, mostly in debug purposes")),
-  m_addPeerOption("add-peer", tr("Manually add peer to local peerlist"), tr("peer")),
-  m_addPriorityNodeOption("add-priority-node", tr("Specify list of peers to connect to and attempt to keep the connection open"),
+  m_allowLocalIpOption("allow-local-ip", tr("主にデバッグ目的で、ローカルIP add to peerリストを許可する")),
+  m_addPeerOption("add-peer", tr("手動でローカルピアリストにピアを追加する"), tr("peer")),
+  m_addPriorityNodeOption("add-priority-node", tr("接続先のピアのリストを指定して、接続を開いたままにします"),
     tr("node")),
-  m_addExclusiveNodeOption("add-exclusive-node", tr("Specify list of peers to connect to only. If this option is given the options "
-    "add-priority-node and seed-node are ignored"), tr("node")),
-  m_seedNodeOption("seed-node", tr("Connect to a node to retrieve peer addresses, and disconnect"), tr("node")),
-  m_hideMyPortOption("hide-my-port", tr("Do not announce yourself as peerlist candidate")),
-  m_dataDirOption("data-dir", tr("Specify data directory"), tr("directory"), QString::fromLocal8Bit(Tools::getDefaultDataDirectory().c_str())),
-  m_minimized("minimized", tr("Run application in minimized mode")) {
+  m_addExclusiveNodeOption("add-exclusive-node", tr("接続先ピアのリストを指定するだけです。 このオプションに "
+     "add-priority-nodeとseed-nodeは無視されます"), tr("node")),
+  m_seedNodeOption("seed-node", tr("ノードに接続してピアアドレスを取得し、切断する"), tr("node")),
+  m_hideMyPortOption("hide-my-port", tr("ピアリスト候補者としてあなた自身を発表しないでください")),
+  m_dataDirOption("data-dir", tr("データディレクトリを指定する"), tr("directory"), QString::fromLocal8Bit(Tools::getDefaultDataDirectory().c_str())),
+  m_minimized("minimized", tr("最小化モードでアプリケーションを実行する")) {
   m_parser.setApplicationDescription(tr("Catalyst wallet"));
   m_parser.addHelpOption();
   m_parser.addVersionOption();

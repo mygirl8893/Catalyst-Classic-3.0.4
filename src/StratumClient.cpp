@@ -118,7 +118,7 @@ void StratumClient::timerEvent(QTimerEvent* _event) {
 }
 
 void StratumClient::connectedToHost() {
-  qDebug() << "Connected!!!";
+  qDebug() << "接続された!!!";
   loginRequest();
 }
 
@@ -155,7 +155,7 @@ void StratumClient::readyRead() {
     if (parseError.error == QJsonParseError::NoError) {
       processData(dataObject);
     } else {
-      qDebug() << "Json parse error: " << parseError.errorString();
+      qDebug() << "Json解析エラー: " << parseError.errorString();
     }
   }
 }
@@ -167,7 +167,7 @@ void StratumClient::processData(const QJsonObject& _jsonObject) {
   } else {
     quint64 id = _jsonObject.value(JSON_RPC_TAG_NAME_ID).toString().toULongLong();
     if (!m_activeRequestMap.contains(id)) {
-      qDebug() << "Unknown responce with id = " << id;
+      qDebug() << "IDが不明なレスポンス = " << id;
       return;
     }
 
@@ -185,7 +185,7 @@ void StratumClient::processNotification(const QJsonObject& _jsonObject) {
 }
 
 void StratumClient::socketError(QTcpSocket::SocketError _error) {
-  qDebug() << "Socket error:" << m_socket->errorString() << ". Reconnecting...";
+  qDebug() << "ソケットエラー:" << m_socket->errorString() << ". 再接続する...";
   Q_EMIT socketErrorSignal(m_socket->errorString());
   reconnect();
 }
@@ -221,13 +221,13 @@ void StratumClient::loginRequest() {
 
 void StratumClient::processLoginResponce(const QJsonObject& _responceObject, const JsonRpcRequest& _request) {
   if (_responceObject.contains(JSON_RPC_TAG_NAME_ERROR) && !_responceObject.value(JSON_RPC_TAG_NAME_ERROR).isNull()) {
-    qDebug() << "Login failed. JsonRPC error. Reconnecting...";
+    qDebug() << "ログインに失敗しました。 JsonRPCエラー。 再接続...";
     reconnect();
     return;
   }
 
   if (_responceObject.value(JSON_RPC_TAG_NAME_RESULT).toObject().value(STRATUM_LOGIN_PARAM_NAME_STATUS).toString() != "OK") {
-    qDebug() << "Login failed. Invalid status. Reconnecting...";
+    qDebug() << "ログインに失敗しました。 無効なステータスです。 再接続...";
     reconnect();
     return;
   }
@@ -243,7 +243,7 @@ void StratumClient::processJobNotification(const QJsonObject& _notificationObjec
 void StratumClient::updateJob(const QVariantMap& _newJobMap) {
   QString jobId = _newJobMap.value(STRATUM_JOB_PARAM_NAME_JOB_ID).toString();
   if (jobId.isEmpty()) {
-    qDebug() << "Job didn't changed";
+    qDebug() << "仕事は変わらなかった";
   } else {
     QWriteLocker lock(&m_jobLock);
     QByteArray blob = QByteArray::fromHex(_newJobMap.value(STRATUM_JOB_PARAM_NAME_JOB_BLOB).toByteArray());

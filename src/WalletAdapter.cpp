@@ -107,7 +107,7 @@ quint64 WalletAdapter::getPendingDepositBalance() const {
 void WalletAdapter::open(const QString& _password) {
   Q_ASSERT(m_wallet == nullptr);
   Settings::instance().setEncrypted(!_password.isEmpty());
-  Q_EMIT walletStateChangedSignal(tr("Opening wallet"));
+  Q_EMIT walletStateChangedSignal(tr("オープニングウォレット"));
 
   m_wallet = NodeAdapter::instance().createWallet();
   m_wallet->addObserver(this);
@@ -143,7 +143,7 @@ void WalletAdapter::createWithKeys(const CryptoNote::AccountKeys& _keys) {
     m_wallet = NodeAdapter::instance().createWallet();
     m_wallet->addObserver(this);
     Settings::instance().setEncrypted(false);
-    Q_EMIT walletStateChangedSignal(tr("Importing keys"));
+    Q_EMIT walletStateChangedSignal(tr("キーのインポート"));
     m_wallet->initWithKeys(_keys, "");
 }
 
@@ -209,7 +209,7 @@ bool WalletAdapter::save(const QString& _file, bool _details, bool _cache) {
       closeFile();
       return false;
     }
-    Q_EMIT walletStateChangedSignal(tr("Saving data"));
+    Q_EMIT walletStateChangedSignal(tr("データを保存する"));
   } else {
     return false;
   }
@@ -315,7 +315,7 @@ void WalletAdapter::sendTransaction(const QVector<CryptoNote::WalletLegacyTransf
   try {
     lock();
     m_sentTransactionId = m_wallet->sendTransaction(_transfers.toStdVector(), _fee, NodeAdapter::instance().convertPaymentId(_paymentId), _mixin, 0);
-    Q_EMIT walletStateChangedSignal(tr("Sending transaction"));
+    Q_EMIT walletStateChangedSignal(tr("取引の送信"));
   } catch (std::system_error&) {
     unlock();
   }
@@ -327,7 +327,7 @@ void WalletAdapter::sendMessage(const QVector<CryptoNote::WalletLegacyTransfer>&
   try {
     lock();
     m_sentMessageId = m_wallet->sendTransaction(_transfers.toStdVector(), _fee, "", _mixin, 0);
-    Q_EMIT walletStateChangedSignal(tr("Sending messages"));
+    Q_EMIT walletStateChangedSignal(tr("メッセージを送信する"));
   } catch (std::system_error&) {
     unlock();
   }
@@ -338,7 +338,7 @@ void WalletAdapter::deposit(quint32 _term, quint64 _amount, quint64 _fee, quint6
   try {
     lock();
     m_depositId = m_wallet->deposit(_term, _amount, _fee, _mixIn);
-    Q_EMIT walletStateChangedSignal(tr("Creating deposit"));
+    Q_EMIT walletStateChangedSignal(tr("預金の登録"));
   } catch (std::system_error&) {
     unlock();
   }
@@ -349,7 +349,7 @@ void WalletAdapter::withdrawUnlockedDeposits(QVector<CryptoNote::DepositId> _dep
   try {
     lock();
     m_depositWithdrawalId = m_wallet->withdrawDeposits(_depositIds.toStdVector(), _fee);
-    Q_EMIT walletStateChangedSignal(tr("Withdrawing deposit"));
+    Q_EMIT walletStateChangedSignal(tr("デポジットの引き出し"));
   } catch (std::system_error&) {
     unlock();
   }
@@ -552,8 +552,8 @@ void WalletAdapter::updateBlockStatusText() {
   const QDateTime blockTime = NodeAdapter::instance().getLastLocalBlockTimestamp();
   quint64 blockAge = blockTime.msecsTo(currentTime);
   const QString warningString = blockTime.msecsTo(currentTime) < LAST_BLOCK_INFO_WARNING_INTERVAL ? "" :
-    QString("  Warning: last block was received %1 hours %2 minutes ago").arg(blockAge / MSECS_IN_HOUR).arg(blockAge % MSECS_IN_HOUR / MSECS_IN_MINUTE);
-  Q_EMIT walletStateChangedSignal(QString(tr("Wallet synchronized. Height: %1  |  Time (UTC): %2%3")).
+    QString("  警告：最後のブロックが受信されました %1 時間前 %2 数分前").arg(blockAge / MSECS_IN_HOUR).arg(blockAge % MSECS_IN_HOUR / MSECS_IN_MINUTE);
+  Q_EMIT walletStateChangedSignal(QString(tr("ウォレットの同期。 高さ: %1  |  時間 (UTC): %2%3")).
     arg(NodeAdapter::instance().getLastLocalBlockHeight()).
     arg(QLocale(QLocale::English).toString(blockTime, "dd MMM yyyy, HH:mm:ss")).
     arg(warningString));
@@ -588,11 +588,11 @@ QString WalletAdapter::getMnemonicSeed(QString _language) const {
   std::string electrum_words;
   if(Settings::instance().isTrackingMode()) {
     // error "Wallet is watch-only and has no seed";
-    return "Wallet is watch-only and has no seed";
+    return "ウォレットは時計のみで、種はありません";
   }
   if(!WalletAdapter::instance().isDeterministic()) {
     // error "Wallet is non-deterministic and has no seed";
-    return "Wallet is non-deterministic and has no seed";
+    return "ウォレットは非決定的で、種がありません";
   }
   CryptoNote::AccountKeys keys;
   WalletAdapter::instance().getAccountKeys(keys);
@@ -605,7 +605,7 @@ CryptoNote::AccountKeys WalletAdapter::getKeysFromMnemonicSeed(QString& _seed) c
   CryptoNote::AccountKeys keys;
   std::string m_seed_language;
   if(!Crypto::ElectrumWords::words_to_bytes(_seed.toStdString(), keys.spendSecretKey, m_seed_language)) {
-    QMessageBox::critical(nullptr, tr("Mnemonic seed is not correct"), tr("There must be an error in mnemonic seed. Make sure you entered it correctly."), QMessageBox::Ok);
+    QMessageBox::critical(nullptr, tr("ニーモニックの種が正しくない"), tr("ニーモニックシードにエラーがある必要があります。 正しく入力したことを確認してください."), QMessageBox::Ok);
   }
   Crypto::secret_key_to_public_key(keys.spendSecretKey,keys.address.spendPublicKey);
   Crypto::SecretKey second;

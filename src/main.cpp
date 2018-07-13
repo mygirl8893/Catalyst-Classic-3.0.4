@@ -23,12 +23,12 @@ using namespace WalletGui;
 
 int main(int argc, char* argv[]) {
   QApplication app(argc, argv);
-  app.setApplicationName("bitcediwallet");
+  app.setApplicationName("catalystwallet");
   app.setApplicationVersion(Settings::instance().getVersion());
   app.setQuitOnLastWindowClosed(false);
 
 #ifndef Q_OS_MAC
-  QApplication::setStyle(QStyleFactory::create("Fusion"));
+  QApplication::setStyle(QStyleFactory::create("融合"));
 #endif
 
   CommandLineParser cmdLineParser(nullptr);
@@ -38,10 +38,10 @@ int main(int argc, char* argv[]) {
 
 #ifdef Q_OS_WIN
   if(!cmdLineParseResult) {
-    QMessageBox::critical(nullptr, QObject::tr("Error"), cmdLineParser.getErrorText());
+    QMessageBox::critical(nullptr, QObject::tr("エラー"), cmdLineParser.getErrorText());
     return app.exec();
   } else if (cmdLineParser.hasHelpOption()) {
-    QMessageBox::information(nullptr, QObject::tr("Help"), cmdLineParser.getHelpText());
+    QMessageBox::information(nullptr, QObject::tr("助けて"), cmdLineParser.getHelpText());
     return app.exec();
   }
 #endif
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
 
   QLockFile lockFile(Settings::instance().getDataDir().absoluteFilePath(QApplication::applicationName() + ".lock"));
   if (!lockFile.tryLock()) {
-    QMessageBox::warning(nullptr, QObject::tr("Fail"), QString("%1 wallet already running").arg(CurrencyAdapter::instance().getCurrencyDisplayName()));
+    QMessageBox::warning(nullptr, QObject::tr("失敗"), QString("%1 既に実行中のウォレット").arg(CurrencyAdapter::instance().getCurrencyDisplayName()));
     return 0;
   }
 
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
     splash->show();
   }
 
-  splash->showMessage(QObject::tr("Loading blockchain..."), Qt::AlignLeft | Qt::AlignBottom, Qt::white);
+  splash->showMessage(QObject::tr("ブロックチェーンの読み込み..."), Qt::AlignLeft | Qt::AlignBottom, Qt::white);
   app.processEvents();
   qRegisterMetaType<CryptoNote::TransactionId>("CryptoNote::TransactionId");
   qRegisterMetaType<quintptr>("quintptr");
