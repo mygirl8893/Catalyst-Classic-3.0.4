@@ -24,7 +24,7 @@ void ChangePasswordDialog::checkPassword(const QString& _password) {
   bool passwordIsConfirmed = !(m_ui->m_newPasswordEdit->text().trimmed().isEmpty() ||
     m_ui->m_newPasswordConfirmationEdit->text().trimmed().isEmpty() ||
     m_ui->m_newPasswordEdit->text().compare(m_ui->m_newPasswordConfirmationEdit->text()));
-  m_ui->m_errorLabel->setText(passwordIsConfirmed ? "" : tr("Password not confirmed"));
+  m_ui->m_errorLabel->setText(passwordIsConfirmed ? "" : tr("パスワードが確認されていない"));
   m_ui->m_okButton->setEnabled(passwordIsConfirmed);
 }
 

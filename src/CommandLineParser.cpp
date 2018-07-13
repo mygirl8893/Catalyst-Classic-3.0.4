@@ -7,8 +7,7 @@ namespace WalletGui {
 
 CommandLineParser::CommandLineParser(QObject* _parent) : QObject(_parent), m_parser(), m_helpOption(m_parser.addHelpOption()),
   m_versionOption(m_parser.addVersionOption()),
-  m_testnetOption("testnet", tr("テストネットを展開するために使用されます。 チェックポイントとハードコードされたシードは無視され、ネットワークIDが変更されます。 "
-     "-data-dirフラグとともに使用します。ウォレットは-testnetフラグで起動する必要があります")),
+  m_testnetOption("testnet", tr("テストネットを展開するために使用されます。 チェックポイントとハードコードされたシードは無視され、ネットワークIDが変更されます。 " "-data-dirフラグとともに使用します。ウォレットは-testnetフラグで起動する必要があります")),
   m_p2pBindIpOption("p2p-bind-ip", tr("P2Pネットワークプロトコルのインタフェース"), tr("ip"), "0.0.0.0"),
   m_p2pBindPortOption("p2p-bind-port", tr("P2Pネットワークプロトコル用ポート"), tr("port"), QString::number(P2P_DEFAULT_PORT)),
   m_p2pExternalOption("p2p-external-port", tr("p2pネットワークプロトコルの外部ポート（NATでポート転送を使用している場合）"),
@@ -17,8 +16,7 @@ CommandLineParser::CommandLineParser(QObject* _parent) : QObject(_parent), m_par
   m_addPeerOption("add-peer", tr("手動でローカルピアリストにピアを追加する"), tr("peer")),
   m_addPriorityNodeOption("add-priority-node", tr("接続先のピアのリストを指定して、接続を開いたままにします"),
     tr("node")),
-  m_addExclusiveNodeOption("add-exclusive-node", tr("接続先ピアのリストを指定するだけです。 このオプションに "
-     "add-priority-nodeとseed-nodeは無視されます"), tr("node")),
+  m_addExclusiveNodeOption("add-exclusive-node", tr("接続先ピアのリストを指定するだけです。 このオプションに " "add-priority-nodeとseed-nodeは無視されます"), tr("node")),
   m_seedNodeOption("seed-node", tr("ノードに接続してピアアドレスを取得し、切断する"), tr("node")),
   m_hideMyPortOption("hide-my-port", tr("ピアリスト候補者としてあなた自身を発表しないでください")),
   m_dataDirOption("data-dir", tr("データディレクトリを指定する"), tr("directory"), QString::fromLocal8Bit(Tools::getDefaultDataDirectory().c_str())),
