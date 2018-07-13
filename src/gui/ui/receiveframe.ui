@@ -25,7 +25,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Address:</string>
+        <string>住所:</string>
        </property>
       </widget>
      </item>
@@ -54,7 +54,7 @@
      <item>
       <widget class="QPushButton" name="m_showKeyButton">
        <property name="text">
-        <string>Show private key</string>
+        <string>秘密鍵を表示する</string>
        </property>
        <property name="checkable">
         <bool>true</bool>

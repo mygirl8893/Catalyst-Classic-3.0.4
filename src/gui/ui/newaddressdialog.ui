@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>New address</string>
+   <string>新しいアドレス</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -49,7 +49,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Address:</string>
+      <string>住所:</string>
      </property>
     </widget>
    </item>
@@ -89,7 +89,7 @@
    <item row="2" column="3">
     <widget class="QPushButton" name="m_cancelButton">
      <property name="text">
-      <string>Cancel</string>
+      <string>キャンセル</string>
      </property>
     </widget>
    </item>

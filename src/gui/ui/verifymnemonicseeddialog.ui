@@ -17,20 +17,20 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>New deterministic wallet created</string>
+   <string>新しい決定論的ウォレットが作成されました</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>This is mnemonic seed of your wallet. Write it down carefully. It allows to restore your wallet.</string>
+      <string>これはあなたの財布のニーモニックの種です。 それを慎重に書き留めます。 それはあなたの財布を復元することができます.</string>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Mnemonic:</string>
+      <string>ニモニック:</string>
      </property>
     </widget>
    </item>
@@ -51,7 +51,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Repeat:</string>
+      <string>繰り返す:</string>
      </property>
     </widget>
    </item>
@@ -84,7 +84,7 @@
      <item>
       <widget class="QLabel" name="m_languageLabel">
        <property name="text">
-        <string>Select language</string>
+        <string>言語を選択する</string>
        </property>
       </widget>
      </item>

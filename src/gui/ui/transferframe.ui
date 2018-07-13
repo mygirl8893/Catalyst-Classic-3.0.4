@@ -35,14 +35,14 @@
    <item row="2" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Amount:</string>
+      <string>量:</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1" colspan="5">
     <widget class="QLineEdit" name="m_labelEdit">
      <property name="placeholderText">
-      <string>Enter a label for this address to add it to your address book</string>
+      <string>このアドレスのラベルを入力してアドレス帳に追加する</string>
      </property>
     </widget>
    </item>
@@ -71,7 +71,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Label:</string>
+      <string>ラベル:</string>
      </property>
     </widget>
    </item>
@@ -121,14 +121,14 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Pay To:</string>
+      <string>に支払います:</string>
      </property>
     </widget>
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Crypto comment:</string>
+      <string>に支払います:</string>
      </property>
     </widget>
    </item>

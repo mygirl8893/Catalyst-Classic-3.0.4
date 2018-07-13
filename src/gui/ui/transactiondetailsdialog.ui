@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Transaction details</string>
+   <string>取引の詳細</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
