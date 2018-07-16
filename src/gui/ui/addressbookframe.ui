@@ -21,18 +21,48 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTreeView" name="m_addressBookView"/>
+    <widget class="QTreeView" name="m_addressBookView">
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContents</enum>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="sortingEnabled">
+      <bool>false</bool>
+     </property>
+     <attribute name="headerDefaultSectionSize">
+      <number>150</number>
+     </attribute>
+     <attribute name="headerStretchLastSection">
+      <bool>false</bool>
+     </attribute>
+    </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="m_addAddressButton">
        <property name="text">
-        <string>New address</string>
+        <string>New contact</string>
        </property>
        <property name="icon">
-        <iconset resource="../../resources.qrc">
-         <normaloff>:/icons/add</normaloff>:/icons/add</iconset>
+        <iconset>
+         <normaloff>:/icons/add_recepient</normaloff>:/icons/add_recepient</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_editAddressButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Edit contact</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/icons/edit</normaloff>:/icons/edit</iconset>
        </property>
       </widget>
      </item>
@@ -42,7 +72,7 @@
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>Delete address</string>
+        <string>Delete contact</string>
        </property>
        <property name="icon">
         <iconset resource="../../resources.qrc">
@@ -59,8 +89,24 @@
         <string>Copy address</string>
        </property>
        <property name="icon">
-        <iconset resource="../../resources.qrc">
-         <normaloff>:/icons/copy</normaloff>:/icons/copy</iconset>
+        <iconset>
+         <normaloff>:/icons/copy_white</normaloff>
+         <selectedoff>:/icons/copy_white</selectedoff>:/icons/copy_white</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_copyPaymentIdButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Copy payment ID</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/icons/copy_white</normaloff>
+         <selectedoff>:/icons/copy_white</selectedoff>:/icons/copy_white</iconset>
        </property>
       </widget>
      </item>
@@ -134,14 +180,30 @@
    </hints>
   </connection>
   <connection>
-   <sender>m_addressBookView</sender>
-   <signal>doubleClicked(QModelIndex)</signal>
+   <sender>m_editAddressButton</sender>
+   <signal>clicked()</signal>
    <receiver>AddressBookFrame</receiver>
-   <slot>addressDoubleClicked(QModelIndex)</slot>
+   <slot>editClicked()</slot>
    <hints>
     <hint type="sourcelabel">
+     <x>147</x>
+     <y>561</y>
+    </hint>
+    <hint type="destinationlabel">
      <x>436</x>
-     <y>271</y>
+     <y>292</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_copyPaymentIdButton</sender>
+   <signal>clicked()</signal>
+   <receiver>AddressBookFrame</receiver>
+   <slot>copyPaymentIdClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>455</x>
+     <y>561</y>
     </hint>
     <hint type="destinationlabel">
      <x>436</x>
@@ -154,6 +216,5 @@
   <slot>addClicked()</slot>
   <slot>deleteClicked()</slot>
   <slot>copyClicked()</slot>
-  <slot>addressDoubleClicked(QModelIndex)</slot>
  </slots>
 </ui>

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Deposit</string>
+   <string>バンク</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -35,7 +35,7 @@
      <item>
       <widget class="QPushButton" name="m_closeButton">
        <property name="text">
-        <string>Close</string>
+        <string>close</string>
        </property>
       </widget>
      </item>

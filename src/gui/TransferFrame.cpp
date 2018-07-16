@@ -3,22 +3,22 @@
 
 #include "TransferFrame.h"
 #include "AddressBookDialog.h"
-#include "AliasProvider.h"
 #include "MainWindow.h"
 #include "CurrencyAdapter.h"
+#include "DnsLookup.h"
 
 #include "ui_transferframe.h"
 
 namespace WalletGui {
 
-Q_DECL_CONSTEXPR quint32 TRANSACTION_ADDRESS_INPUT_INTERVAL = 1500;
+Q_DECL_CONSTEXPR quint32 ADDRESS_INPUT_INTERVAL = 1500;
 
 TransferFrame::TransferFrame(QWidget* _parent) : QFrame(_parent), m_ui(new Ui::TransferFrame),
-  m_aliasProvider(new AliasProvider(this)), m_addressInputTimer(-1) {
+  m_aliasProvider(new DnsManager(this)), m_addressInputTimer(-1) {
   m_ui->setupUi(this);
   setAttribute(Qt::WA_DeleteOnClose);
   m_ui->m_amountSpin->setSuffix(" " + CurrencyAdapter::instance().getCurrencyTicker().toUpper());
-  connect(m_aliasProvider, &AliasProvider::aliasFoundSignal, this, &TransferFrame::onAliasFound);
+  connect(m_aliasProvider, &DnsManager::aliasFoundSignal, this, &TransferFrame::onAliasFound);
 }
 
 TransferFrame::~TransferFrame() {
@@ -55,8 +55,28 @@ void TransferFrame::disableRemoveButton(bool _disable) {
   m_ui->m_removeButton->setDisabled(_disable);
 }
 
+void TransferFrame::addressBookClicked() {
+  AddressBookDialog dlg(&MainWindow::instance());
+  if(dlg.exec() == QDialog::Accepted) {
+    m_ui->m_addressEdit->setText(dlg.getAddress());
+    Q_EMIT insertPaymentIDSignal(dlg.getPaymentID());
+  }
+}
+
+void TransferFrame::amountValueChange() {
+  Q_EMIT amountValueChangedSignal();
+}
+
 void TransferFrame::setAddress(const QString& _address) {
   m_ui->m_addressEdit->setText(_address);
+}
+
+void TransferFrame::setLabel(QString _label) {
+  m_ui->m_labelEdit->setText(_label);
+}
+
+void TransferFrame::setAmount(quint64 _amount) {
+  m_ui->m_amountSpin->setValue(CurrencyAdapter::instance().formatAmount(_amount).toDouble());
 }
 
 void TransferFrame::timerEvent(QTimerEvent* _event) {
@@ -74,19 +94,13 @@ void TransferFrame::onAliasFound(const QString& _name, const QString& _address) 
   m_ui->m_addressEdit->setText(QString("%1 <%2>").arg(_name).arg(_address));
 }
 
-void TransferFrame::addressBookClicked() {
-  AddressBookDialog dlg(&MainWindow::instance());
-  if(dlg.exec() == QDialog::Accepted) {
-    m_ui->m_addressEdit->setText(dlg.getAddress());
-  }
-}
-
 void TransferFrame::addressEdited(const QString& _text) {
-  if (m_addressInputTimer != -1) {
-    killTimer(m_addressInputTimer);
+  if(!_text.isEmpty() && _text.contains('.')) {
+    if (m_addressInputTimer != -1) {
+      killTimer(m_addressInputTimer);
+    }
+    m_addressInputTimer = startTimer(ADDRESS_INPUT_INTERVAL);
   }
-
-  m_addressInputTimer = startTimer(TRANSACTION_ADDRESS_INPUT_INTERVAL);
 }
 
 void TransferFrame::pasteClicked() {

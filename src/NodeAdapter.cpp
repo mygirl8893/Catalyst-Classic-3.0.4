@@ -122,31 +122,95 @@ CryptoNote::IWalletLegacy* NodeAdapter::createWallet() const {
 
 bool NodeAdapter::init() {
   Q_ASSERT(m_node == nullptr);
-  QUrl localNodeUrl = QUrl::fromUserInput(QString("127.0.0.1:%1").arg(RPC_DEFAULT_PORT));
 
-  m_node = createRpcNode(CurrencyAdapter::instance().getCurrency(), *this, LoggerAdapter::instance().getLoggerManager(), localNodeUrl.host().toStdString(), localNodeUrl.port());
+QString connection = Settings::instance().getConnection();
+  bool initCompleted = false;
+  if(connection.compare("embedded") == 0) {
 
-  QTimer initTimer;
-  initTimer.setInterval(3000);
-  initTimer.setSingleShot(true);
-  initTimer.start();
-  m_node->init([this](std::error_code _err) {
-      Q_UNUSED(_err);
-    });
-  QEventLoop waitLoop;
-  connect(&initTimer, &QTimer::timeout, &waitLoop, &QEventLoop::quit);
-  connect(this, &NodeAdapter::peerCountUpdatedSignal, &waitLoop, &QEventLoop::quit);
-  connect(this, &NodeAdapter::localBlockchainUpdatedSignal, &waitLoop, &QEventLoop::quit);
-  waitLoop.exec();
-  if (initTimer.isActive()) {
-    initTimer.stop();
-    Q_EMIT nodeInitCompletedSignal();
-    return true;
+      m_node = nullptr;
+      return initInProcessNode();
+
+  } else if(connection.compare("local") == 0) {
+      QUrl localNodeUrl = QUrl::fromUserInput(QString("127.0.0.1:%1").arg(Settings::instance().getCurrentLocalDaemonPort()));
+      m_node = createRpcNode(CurrencyAdapter::instance().getCurrency(), *this, LoggerAdapter::instance().getLoggerManager(), localNodeUrl.host().toStdString(), localNodeUrl.port());
+      QTimer initTimer;
+      initTimer.setInterval(3000);
+      initTimer.setSingleShot(true);
+      initTimer.start();
+          m_node->init([this](std::error_code _err) {
+              Q_UNUSED(_err);
+            });
+      QEventLoop waitLoop;
+      connect(&initTimer, &QTimer::timeout, &waitLoop, &QEventLoop::quit);
+      connect(this, &NodeAdapter::peerCountUpdatedSignal, [&initCompleted]() {
+         initCompleted = true;
+      });
+      connect(this, &NodeAdapter::localBlockchainUpdatedSignal, [&initCompleted]() {
+         initCompleted = true;
+      });
+      connect(this, &NodeAdapter::peerCountUpdatedSignal, &waitLoop, &QEventLoop::quit);
+      connect(this, &NodeAdapter::localBlockchainUpdatedSignal, &waitLoop, &QEventLoop::quit);
+      waitLoop.exec();
+      if (initTimer.isActive()) {
+        initTimer.stop();
+        Q_EMIT nodeInitCompletedSignal();
+        return true;
+      }
+
+  } else if(connection.compare("remote") == 0) {
+      QUrl remoteNodeUrl = QUrl::fromUserInput(Settings::instance().getCurrentRemoteNode());
+      m_node = createRpcNode(CurrencyAdapter::instance().getCurrency(), *this, LoggerAdapter::instance().getLoggerManager(), remoteNodeUrl.host().toStdString(), remoteNodeUrl.port());
+      QTimer initTimer;
+      initTimer.setInterval(3000);
+      initTimer.setSingleShot(true);
+      initTimer.start();
+      m_node->init([this](std::error_code _err) {
+          Q_UNUSED(_err);
+        });
+      QEventLoop waitLoop;
+      connect(&initTimer, &QTimer::timeout, &waitLoop, &QEventLoop::quit);
+      connect(this, &NodeAdapter::peerCountUpdatedSignal, [&initCompleted]() {
+         initCompleted = true;
+      });
+      connect(this, &NodeAdapter::localBlockchainUpdatedSignal, [&initCompleted]() {
+         initCompleted = true;
+      });
+      connect(this, &NodeAdapter::peerCountUpdatedSignal, &waitLoop, &QEventLoop::quit);
+      connect(this, &NodeAdapter::localBlockchainUpdatedSignal, &waitLoop, &QEventLoop::quit);
+      waitLoop.exec();
+      if (initTimer.isActive()) {
+        initTimer.stop();
+        Q_EMIT nodeInitCompletedSignal();
+        return true;
+      }
+  } else {
+
+      QUrl localNodeUrl = QUrl::fromUserInput(QString("127.0.0.1:%1").arg(RPC_DEFAULT_PORT));
+
+      m_node = createRpcNode(CurrencyAdapter::instance().getCurrency(), *this, LoggerAdapter::instance().getLoggerManager(), localNodeUrl.host().toStdString(), localNodeUrl.port());
+
+      QTimer initTimer;
+      initTimer.setInterval(3000);
+      initTimer.setSingleShot(true);
+      initTimer.start();
+      m_node->init([this](std::error_code _err) {
+          Q_UNUSED(_err);
+      });
+      QEventLoop waitLoop;
+      connect(&initTimer, &QTimer::timeout, &waitLoop, &QEventLoop::quit);
+      connect(this, &NodeAdapter::peerCountUpdatedSignal, &waitLoop, &QEventLoop::quit);
+      connect(this, &NodeAdapter::localBlockchainUpdatedSignal, &waitLoop, &QEventLoop::quit);
+      waitLoop.exec();
+      if (initTimer.isActive()) {
+         initTimer.stop();
+      Q_EMIT nodeInitCompletedSignal();
+      return true;
   }
 
   delete m_node;
   m_node = nullptr;
   return initInProcessNode();
+ }
 }
 
 quint64 NodeAdapter::getLastKnownBlockHeight() const {
@@ -162,6 +226,59 @@ quint64 NodeAdapter::getLastLocalBlockHeight() const {
 QDateTime NodeAdapter::getLastLocalBlockTimestamp() const {
   Q_CHECK_PTR(m_node);
   return QDateTime::fromTime_t(m_node->getLastLocalBlockTimestamp(), Qt::UTC);
+}
+
+quint64 NodeAdapter::getDifficulty() {
+  Q_CHECK_PTR(m_node);
+  return m_node->getDifficulty();
+}
+
+quint64 NodeAdapter::getTxCount() {
+  Q_CHECK_PTR(m_node);
+  return m_node->getTxCount();
+}
+
+quint64 NodeAdapter::getTxPoolSize() {
+  Q_CHECK_PTR(m_node);
+  return m_node->getTxPoolSize();
+}
+
+quint64 NodeAdapter::getAltBlocksCount() {
+  Q_CHECK_PTR(m_node);
+  return m_node->getAltBlocksCount();
+}
+
+quint64 NodeAdapter::getConnectionsCount() {
+  Q_CHECK_PTR(m_node);
+  return m_node->getConnectionsCount();
+}
+
+quint64 NodeAdapter::getOutgoingConnectionsCount() {
+  Q_CHECK_PTR(m_node);
+  return m_node->getOutgoingConnectionsCount();
+}
+
+quint64 NodeAdapter::getIncomingConnectionsCount() {
+  Q_CHECK_PTR(m_node);
+  return m_node->getIncomingConnectionsCount();
+}
+
+quint64 NodeAdapter::getWhitePeerlistSize() {
+  Q_CHECK_PTR(m_node);
+  return m_node->getWhitePeerlistSize();
+}
+
+quint64 NodeAdapter::getGreyPeerlistSize() {
+  Q_CHECK_PTR(m_node);
+  return m_node->getGreyPeerlistSize();
+}
+  
+CryptoNote::BlockHeaderInfo NodeAdapter::getLastLocalBlockHeaderInfo() {
+  return m_node->getLastLocalBlockHeaderInfo();
+}
+
+uint8_t NodeAdapter::getCurrentBlockMajorVersion() {
+  return getLastLocalBlockHeaderInfo().majorVersion;
 }
 
 void NodeAdapter::peerCountUpdated(Node& _node, size_t _count) {
@@ -270,7 +387,14 @@ CryptoNote::NetNodeConfig NodeAdapter::makeNetNodeConfig() const {
     options.insert(std::make_pair("seed-node", boost::program_options::variable_value(seedNodeList, false)));
   }
 
-  options.insert(std::make_pair("hide-my-port", boost::program_options::variable_value(hideMyPort, false)));
+  QString connection = Settings::instance().getConnection();
+
+  if(connection.compare("remote") == 0) {
+      options.insert(std::make_pair("hide-my-port", boost::program_options::variable_value(hideMyPort, true)));
+  } else {
+      options.insert(std::make_pair("hide-my-port", boost::program_options::variable_value(hideMyPort, false)));
+  }
+
   options.insert(std::make_pair("data-dir", boost::program_options::variable_value(dataDir, false)));
   int size = options.size();
   config.init(options);

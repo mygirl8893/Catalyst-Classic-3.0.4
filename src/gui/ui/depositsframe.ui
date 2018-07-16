@@ -41,6 +41,13 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
+      <item row="2" column="5">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Available Balance:</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_7">
         <property name="font">
@@ -50,18 +57,18 @@
          </font>
         </property>
         <property name="text">
-         <string>Deposits</string>
+         <string>Deposit</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="label_8">
         <property name="text">
          <string>Locked:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="2">
+      <item row="2" column="1" colspan="2">
        <widget class="QLabel" name="m_lockedDepositLabel">
         <property name="font">
          <font>
@@ -77,21 +84,21 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
+      <item row="2" column="3">
        <widget class="QLabel" name="m_tickerLabel1">
         <property name="text">
          <string notr="true"/>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="6" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>Unlocked:</string>
+         <string>unlock:</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2">
+      <item row="6" column="1" colspan="2">
        <widget class="QLabel" name="m_unlockedDepositLabel">
         <property name="font">
          <font>
@@ -107,21 +114,21 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
+      <item row="6" column="3">
        <widget class="QLabel" name="m_tickerLabel2">
         <property name="text">
          <string notr="true"/>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="8" column="0">
        <widget class="QLabel" name="label_10">
         <property name="text">
-         <string>Total:</string>
+         <string>total:</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1" colspan="2">
+      <item row="8" column="1" colspan="2">
        <widget class="QLabel" name="m_totalDepositLabel">
         <property name="font">
          <font>
@@ -137,7 +144,7 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="3">
+      <item row="8" column="3">
        <widget class="QLabel" name="m_tickerLabel3">
         <property name="text">
          <string notr="true"/>
@@ -157,17 +164,32 @@
         </property>
        </spacer>
       </item>
-      <item row="4" column="4">
+      <item row="8" column="4">
        <widget class="QPushButton" name="m_withdrawButton">
         <property name="text">
          <string>Withdraw</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="4">
+      <item row="7" column="0" colspan="4">
        <widget class="Line" name="line_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="5">
+       <widget class="QLabel" name="m_balanceLabel">
+        <property name="font">
+         <font>
+          <family>Century Schoolbook L</family>
+          <weight>75</weight>
+          <italic>false</italic>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string notr="true">0.00 </string>
         </property>
        </widget>
       </item>
@@ -210,14 +232,14 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Time:</string>
+         <string>time:</string>
         </property>
        </widget>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Amount:</string>
+         <string>amount:</string>
         </property>
        </widget>
       </item>
@@ -241,10 +263,17 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="2" alignment="Qt::AlignLeft">
+      <item row="3" column="2" alignment="Qt::AlignLeft">
        <widget class="QPushButton" name="m_depositButton">
         <property name="text">
-         <string>Deposit</string>
+         <string>deposit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="4">
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>

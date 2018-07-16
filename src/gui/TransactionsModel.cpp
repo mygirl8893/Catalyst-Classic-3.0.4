@@ -1,16 +1,10 @@
-// Copyright (c) 2011-2016 The Cryptonote developers
-// Copyright (c) 2015-2016 XDN developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
 #include <QDateTime>
 #include <QFont>
 #include <QMetaEnum>
 #include <QPixmap>
-#include <QTextStream>
+#include <QDebug>
 
 #include "CurrencyAdapter.h"
-#include "Message.h"
 #include "NodeAdapter.h"
 #include "TransactionsModel.h"
 #include "WalletAdapter.h"
@@ -18,9 +12,6 @@
 namespace WalletGui {
 
 enum class TransactionType : quint8 {MINED, INPUT, OUTPUT, INOUT, DEPOSIT};
-
-const int TRANSACTIONS_MODEL_COLUMN_COUNT =
-  TransactionsModel::staticMetaObject.enumerator(TransactionsModel::staticMetaObject.indexOfEnumerator("Columns")).keyCount();
 
 namespace {
 
@@ -67,16 +58,12 @@ TransactionsModel::~TransactionsModel() {
 }
 
 Qt::ItemFlags TransactionsModel::flags(const QModelIndex& _index) const {
-  Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemNeverHasChildren | Qt::ItemIsSelectable;
-  if(_index.column() == COLUMN_HASH) {
-    flags |= Qt::ItemIsEditable;
-  }
-
+  Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemNeverHasChildren | Qt::ItemIsSelectable; // | Qt::ToolTip;
   return flags;
 }
 
 int TransactionsModel::columnCount(const QModelIndex& _parent) const {
-  return TRANSACTIONS_MODEL_COLUMN_COUNT;
+  return TransactionsModel::staticMetaObject.enumerator(TransactionsModel::staticMetaObject.indexOfEnumerator("Columns")).keyCount();
 }
 
 int TransactionsModel::rowCount(const QModelIndex& _parent) const {
@@ -90,6 +77,26 @@ QVariant TransactionsModel::headerData(int _section, Qt::Orientation _orientatio
 
   switch(_role) {
   case Qt::DisplayRole:
+    switch(_section) {
+    case COLUMN_STATE:
+      return QVariant();
+    case COLUMN_DATE:
+      return tr("Date");
+    case COLUMN_TYPE:
+      return tr("Type");
+    case COLUMN_HASH:
+      return tr("Hash");
+    case COLUMN_ADDRESS:
+      return tr("Address");
+    case COLUMN_AMOUNT:
+      return tr("Amount");
+    case COLUMN_PAYMENT_ID:
+      return tr("PaymentID");
+    default:
+      break;
+    }
+
+  case Qt::EditRole:
     switch(_section) {
     case COLUMN_STATE:
       return QVariant();
@@ -149,14 +156,19 @@ QVariant TransactionsModel::data(const QModelIndex& _index, int _role) const {
 
   switch(_role) {
   case Qt::DisplayRole:
-  case Qt::EditRole:
     return getDisplayRole(_index);
+
+  case Qt::EditRole:
+    return getEditRole(_index);
 
   case Qt::DecorationRole:
     return getDecorationRole(_index);
 
   case Qt::TextAlignmentRole:
     return getAlignmentRole(_index);
+
+  case Qt::ToolTipRole:
+    return getToolTipRole(_index);
 
   default:
     return getUserRole(_index, _role, transactionId, transaction, transferId, transfer, depositId, deposit);
@@ -181,10 +193,8 @@ QByteArray TransactionsModel::toCsv() const {
   QByteArray res;
   res.append("\"State\",\"Date\",\"Amount\",\"Fee\",\"Hash\",\"Height\",\"Address\",\"Payment ID\"\n");
   for (quint32 row = 0; row < rowCount(); ++row) {
-    QModelIndex ind = index(row, COLUMN_STATE);
-    quint64 numberOfConfirmations = ind.data(ROLE_NUMBER_OF_CONFIRMATIONS).value<quint64>();
-    QString text = (numberOfConfirmations == 0 ? tr("unconfirmed") : tr("confirmations"));
-    res.append("\"").append(tr("%1 / %2").arg(numberOfConfirmations).arg(text).toUtf8()).append("\",");
+    QModelIndex ind = index(row, 0);
+    res.append("\"").append(ind.data().toString().toUtf8()).append("\",");
     res.append("\"").append(ind.sibling(row, COLUMN_DATE).data().toString().toUtf8()).append("\",");
     res.append("\"").append(ind.sibling(row, COLUMN_AMOUNT).data().toString().toUtf8()).append("\",");
     res.append("\"").append(ind.sibling(row, COLUMN_FEE).data().toString().toUtf8()).append("\",");
@@ -247,6 +257,94 @@ QVariant TransactionsModel::getDisplayRole(const QModelIndex& _index) const {
     break;
   }
 
+  return QVariant();
+}
+
+QVariant TransactionsModel::getEditRole(const QModelIndex& _index) const {
+  switch(_index.column()) {
+
+  case COLUMN_STATE: {
+    quint64 numberOfConfirmations = _index.data(ROLE_NUMBER_OF_CONFIRMATIONS).value<quint64>();
+    return numberOfConfirmations;
+  }
+
+  case COLUMN_DATE: {
+    QDateTime date = _index.data(ROLE_DATE).toDateTime();
+    return (date);
+  }
+
+  case COLUMN_HASH:
+    return _index.data(ROLE_HASH).toByteArray().toHex().toUpper();
+
+  case COLUMN_ADDRESS: {
+    TransactionType transactionType = static_cast<TransactionType>(_index.data(ROLE_TYPE).value<quint8>());
+    QString transactionAddress = _index.data(ROLE_ADDRESS).toString();
+    if (transactionType == TransactionType::INPUT || transactionType == TransactionType::MINED ||
+        transactionType == TransactionType::INOUT) {
+      return QString(tr("me (%1)").arg(WalletAdapter::instance().getAddress()));
+    } else if (transactionAddress.isEmpty()) {
+      return tr("(n/a)");
+    }
+
+    return transactionAddress;
+  }
+
+  case COLUMN_AMOUNT: {
+    qint64 amount = _index.data(ROLE_AMOUNT).value<qint64>();
+    QString amountStr = CurrencyAdapter::instance().formatAmount(qAbs(amount)).remove(',');
+    if (amount < 0) {
+      amountStr.insert(0, "-");
+    }
+    return (amountStr.toDouble());
+  }
+
+  case COLUMN_PAYMENT_ID:
+    return _index.data(ROLE_PAYMENT_ID);
+
+  case COLUMN_FEE: {
+    qint64 fee = _index.data(ROLE_FEE).value<qint64>();
+    return CurrencyAdapter::instance().formatAmount(fee);
+  }
+
+  case COLUMN_HEIGHT:
+    return QString::number(_index.data(ROLE_HEIGHT).value<quint64>());
+
+  default:
+    break;
+  }
+
+  return QVariant();
+}
+
+QVariant TransactionsModel::getToolTipRole(const QModelIndex& _index) const {
+  quint64 numberOfConfirmations = _index.data(ROLE_NUMBER_OF_CONFIRMATIONS).value<quint64>();
+  TransactionType transactionType = static_cast<TransactionType>(_index.data(ROLE_TYPE).value<quint8>());
+
+  if(numberOfConfirmations == 0) {
+    if (transactionType == TransactionType::INPUT)
+      return QString(tr("Incoming transaction, unverified").arg(numberOfConfirmations));
+
+    if (transactionType == TransactionType::MINED)
+      return QString(tr("Mining, confirmation").arg(numberOfConfirmations));
+
+    if (transactionType == TransactionType::INOUT)
+      return QString(tr("Sent to you, unverified").arg(numberOfConfirmations));
+
+    if (transactionType == TransactionType::OUTPUT)
+      return QString(tr("Withdrawal transaction, unconfirmed").arg(numberOfConfirmations));
+  } else {
+    if (transactionType == TransactionType::INPUT)
+      return QString(tr("Inbound transaction, %n Confirmation(s)", "", numberOfConfirmations));
+
+    if (transactionType == TransactionType::MINED)
+      return QString(tr("Mining, %n Confirmation(s)", "", numberOfConfirmations));
+
+    if (transactionType == TransactionType::INOUT)
+      return QString(tr("sent self., %n Confirmation(s)", "", numberOfConfirmations));
+
+    if (transactionType == TransactionType::OUTPUT)
+      return QString(tr("Outbound transaction, %n Confirmation(s)", "", numberOfConfirmations));
+  }
   return QVariant();
 }
 

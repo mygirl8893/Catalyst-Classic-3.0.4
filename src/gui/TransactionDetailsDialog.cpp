@@ -1,9 +1,12 @@
 #include <QDateTime>
 
+#include <IWalletLegacy.h>
+
 #include "CurrencyAdapter.h"
 #include "DepositModel.h"
 #include "TransactionDetailsDialog.h"
 #include "TransactionsModel.h"
+#include "WalletAdapter.h"
 
 #include "ui_transactiondetailsdialog.h"
 
@@ -31,11 +34,6 @@ TransactionDetailsDialog::TransactionDetailsDialog(const QModelIndex& _index, QW
     CurrencyAdapter::instance().getCurrencyTicker().toUpper();
   QString feeText = CurrencyAdapter::instance().formatAmount(transactionIndex.data(TransactionsModel::ROLE_FEE).value<quint64>()) + " " +
     CurrencyAdapter::instance().getCurrencyTicker().toUpper();
-  QStringList messageList = _index.data(TransactionsModel::ROLE_MESSAGES).toStringList();
-
-  for (quint32 i = 0; i < messageList.size(); ++i) {
-    messageList[i] = messageList[i].toHtmlEscaped().replace("\n", "<br/>");
-  }
 
   CryptoNote::DepositId depositId = transactionIndex.data(TransactionsModel::ROLE_DEPOSIT_ID).value<CryptoNote::DepositId>();
 
@@ -83,7 +81,6 @@ TransactionDetailsDialog::TransactionDetailsDialog(const QModelIndex& _index, QW
     arg(transactionIndex.sibling(transactionIndex.row(), TransactionsModel::COLUMN_DATE).data().toString()).arg(transactionIndex.sibling(transactionIndex.row(),
     TransactionsModel::COLUMN_ADDRESS).data().toString()).arg(amountText).arg(feeText).
     arg(transactionIndex.sibling(transactionIndex.row(), TransactionsModel::COLUMN_HASH).data().toString()).
-    arg(messageList.join("<br/><br/>=========<br/><br/>")).
     arg(depositInfo));
 }
 

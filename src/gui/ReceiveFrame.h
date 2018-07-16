@@ -2,6 +2,8 @@
 
 #include <QFrame>
 
+#include "AccountFrame.h"
+
 namespace Ui {
 class ReceiveFrame;
 }
@@ -16,16 +18,25 @@ public:
   ReceiveFrame(QWidget* _parent);
   ~ReceiveFrame();
 
+  Q_SLOT void closePaymentRequestForm();
+
 private:
   QScopedPointer<Ui::ReceiveFrame> m_ui;
 
+  const WalletGui::AccountFrame * accoframe;
+
   void updateWalletAddress(const QString& _address);
-  void walletOpened(int _error);
   void walletClosed();
 
+  QString wallet_address;
+  QString requestUri;
+
   Q_SLOT void copyAddress();
-  Q_SLOT void copyKey();
-  Q_SLOT void showKeyClicked();
+  Q_SLOT void saveQRcodeToFile();
+  Q_SLOT void requestPaymentClicked();
+  Q_SLOT void generatePaymentIdClicked();
+
+  Q_SLOT void createRequestPaymentClicked();
 };
 
 }

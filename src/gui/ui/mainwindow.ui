@@ -197,11 +197,13 @@
     <addaction name="m_importKeyAction"/>
     <addaction name="separator"/>
     <addaction name="m_resetAction"/>
+    <addaction name="separator"/>
+    <addaction name="m_openUriAction"/>
     <addaction name="m_exitAction"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
-     <string>Settings</string>
+     <string>Setting</string>
     </property>
     <addaction name="m_encryptWalletAction"/>
     <addaction name="m_changePasswordAction"/>
@@ -299,7 +301,7 @@
      <normaloff>:/icons/overview</normaloff>:/icons/overview</iconset>
    </property>
    <property name="text">
-    <string>Overview</string>
+    <string>Home</string>
    </property>
   </action>
   <action name="m_sendAction">
@@ -344,7 +346,7 @@
      <normaloff>:/icons/transactions</normaloff>:/icons/transactions</iconset>
    </property>
    <property name="text">
-    <string>Transactions</string>
+    <string>Transaction</string>
    </property>
   </action>
   <action name="m_exitAction">
@@ -378,7 +380,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Create wallet</string>
+    <string>Create Wallet</string>
    </property>
   </action>
   <action name="m_openWalletAction">
@@ -386,7 +388,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Open wallet</string>
+    <string>OPen Wallet</string>
    </property>
   </action>
   <action name="m_encryptWalletAction">
@@ -394,7 +396,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Encrypt wallet</string>
+    <string>Encrypt</string>
    </property>
   </action>
   <action name="m_changePasswordAction">
@@ -402,10 +404,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Change password</string>
+    <string>Change Password</string>
    </property>
    <property name="toolTip">
-    <string>Change password</string>
+    <string>パスワードを変更する</string>
    </property>
   </action>
   <action name="m_aboutCryptonoteAction">
@@ -421,7 +423,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>About Qt</string>
+    <string>Qt 約</string>
    </property>
   </action>
   <action name="m_backupWalletAction">
@@ -429,7 +431,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Backup wallet</string>
+    <string>Backup Wallet</string>
    </property>
   </action>
   <action name="m_startOnLoginAction">
@@ -437,7 +439,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Start on system login</string>
+    <string>Start Login On Startup</string>
    </property>
   </action>
   <action name="m_minimizeToTrayAction">
@@ -445,7 +447,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Minimize to tray</string>
+    <string>Minimize</string>
    </property>
   </action>
   <action name="m_closeToTrayAction">
@@ -453,12 +455,12 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Close to tray</string>
+    <string>Close To Tray</string>
    </property>
   </action>
   <action name="m_importKeyAction">
    <property name="text">
-    <string>Import private key</string>
+    <string>Import Key</string>
    </property>
   </action>
   <action name="m_miningAction">
@@ -482,15 +484,20 @@
      <normaloff>:/icons/deposits</normaloff>:/icons/deposits</iconset>
    </property>
    <property name="text">
-    <string>Deposits</string>
+    <string>Bank</string>
    </property>
   </action>
   <action name="m_resetAction">
    <property name="text">
-    <string>Reset wallet</string>
+    <string>Reset</string>
    </property>
    <property name="toolTip">
-    <string>Reset wallet</string>
+    <string>ウォレットをリセットする</string>
+   </property>
+  </action>
+  <action name="m_openUriAction">
+   <property name="text">
+    <string>Open URI</string>
    </property>
   </action>
  </widget>
@@ -795,6 +802,22 @@
     <hint type="destinationlabel">
      <x>506</x>
      <y>301</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_openUriAction</sender>
+   <signal>triggered()</signal>
+   <receiver>m_sendFrame</receiver>
+   <slot>openUriClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>316</x>
+     <y>310</y>
     </hint>
    </hints>
   </connection>
