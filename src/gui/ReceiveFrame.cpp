@@ -1,10 +1,17 @@
 #include <QClipboard>
+#include <QFileDialog>
+#include <QBuffer>
+#include <QUrl>
+#include <QTime>
 
 #include <common/Base58.h>
 
+#include "MainWindow.h"
 #include "ReceiveFrame.h"
 #include "CurrencyAdapter.h"
 #include "WalletAdapter.h"
+#include "QRLabel.h"
+#include "ShowPaymentRequestDialog.h"
 
 #include "ui_receiveframe.h"
 
@@ -12,9 +19,10 @@ namespace WalletGui {
 
 ReceiveFrame::ReceiveFrame(QWidget* _parent) : QFrame(_parent), m_ui(new Ui::ReceiveFrame) {
   m_ui->setupUi(this);
-  m_ui->m_keyFrame->hide();
+  m_ui->m_addressQRFrame->hide();
+  m_ui->m_requestPaymentFrame->hide();
+  m_ui->m_requestAmountSpin->setSuffix(" " + CurrencyAdapter::instance().getCurrencyTicker().toUpper());
   connect(&WalletAdapter::instance(), &WalletAdapter::updateWalletAddressSignal, this, &ReceiveFrame::updateWalletAddress);
-  connect(&WalletAdapter::instance(), &WalletAdapter::walletInitCompletedSignal, this, &ReceiveFrame::walletOpened, Qt::QueuedConnection);
   connect(&WalletAdapter::instance(), &WalletAdapter::walletCloseCompletedSignal, this, &ReceiveFrame::walletClosed, Qt::QueuedConnection);
 }
 
@@ -22,45 +30,72 @@ ReceiveFrame::~ReceiveFrame() {
 }
 
 void ReceiveFrame::updateWalletAddress(const QString& _address) {
-  m_ui->m_addressEdit->setText(_address);
-}
-
-void ReceiveFrame::walletOpened(int _error) {
-  if (_error != 0) {
-    return;
-  }
-
-  CryptoNote::AccountKeys keys;
-  WalletAdapter::instance().getAccountKeys(keys);
-  QString privateKeys = QString::fromStdString(Tools::Base58::encode_addr(CurrencyAdapter::instance().getAddressPrefix(),
-    std::string(reinterpret_cast<char*>(&keys), sizeof(keys))));
-
-  m_ui->m_keyEdit->setText(privateKeys);
-  m_ui->m_qrLabel->showQRCode(privateKeys);
+  wallet_address = _address;
+  m_ui->m_qrLabel->showQRCode(_address);
+  m_ui->m_addressQRFrame->show();
 }
 
 void ReceiveFrame::walletClosed() {
-  m_ui->m_addressEdit->clear();
-  m_ui->m_keyEdit->clear();
   m_ui->m_qrLabel->clear();
 }
 
 void ReceiveFrame::copyAddress() {
-  QApplication::clipboard()->setText(m_ui->m_addressEdit->text());
+  QApplication::clipboard()->setText(wallet_address);
 }
 
-void ReceiveFrame::copyKey() {
-  QApplication::clipboard()->setText(m_ui->m_keyEdit->text());
+void ReceiveFrame::saveQRcodeToFile() {
+  QString fileName = QFileDialog::getSaveFileName(&MainWindow::instance(), tr("Save QR Code"), QDir::homePath(), "PNG (*.png)");
+  if (!fileName.isEmpty()) {
+    QPixmap qrcode = QPixmap::grabWidget(m_ui->m_qrLabel);
+    QFile f(fileName);
+    if (f.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+      QByteArray ba;
+      QBuffer buffer(&ba);
+      buffer.open(QIODevice::WriteOnly);
+      qrcode.save(&buffer, "PNG");
+      f.write(ba);
+      f.close();
+    }
+  }
 }
 
-void ReceiveFrame::showKeyClicked() {
-  if (!WalletAdapter::instance().isOpen()) {
-    m_ui->m_showKeyButton->setChecked(false);
-    return;
+void ReceiveFrame::requestPaymentClicked() {
+  m_ui->m_addressQRFrame->hide();
+  m_ui->m_bottomButtonsFrame->hide();
+  m_ui->m_requestPaymentFrame->show();
+}
+
+void ReceiveFrame::closePaymentRequestForm() {
+  m_ui->m_requestPaymentFrame->hide();
+  m_ui->m_addressQRFrame->show();
+  m_ui->m_bottomButtonsFrame->show();
+}
+
+void ReceiveFrame::generatePaymentIdClicked() {
+  m_ui->m_requestPaymentIdEdit->setText(CurrencyAdapter::instance().generatePaymentId());
+}
+
+void ReceiveFrame::createRequestPaymentClicked() {
+  requestUri = "Catalyst :" + wallet_address;
+  if(CurrencyAdapter::instance().parseAmount(m_ui->m_requestAmountSpin->cleanText()) != 0){
+    requestUri.append("?amount=" + m_ui->m_requestAmountSpin->cleanText());
   }
 
-  m_ui->m_showKeyButton->setText(m_ui->m_showKeyButton->isChecked() ? tr("Hide private keys") : tr("Show private keys"));
-  m_ui->m_keyFrame->setVisible(m_ui->m_showKeyButton->isChecked());
+  if(CurrencyAdapter::instance().parseAmount(m_ui->m_requestAmountSpin->cleanText()) != 0 && !m_ui->m_requestPaymentIdEdit->text().isEmpty()) {
+    requestUri.append("&payment_id=" + m_ui->m_requestPaymentIdEdit->text());
+  } else if(!m_ui->m_requestPaymentIdEdit->text().isEmpty()) {
+    requestUri.append("?payment_id=" + m_ui->m_requestPaymentIdEdit->text());
+  }
+
+  if((CurrencyAdapter::instance().parseAmount(m_ui->m_requestAmountSpin->cleanText()) != 0 || !m_ui->m_requestPaymentIdEdit->text().isEmpty()) && !m_ui->m_payerLabel->text().isEmpty()) {
+    requestUri.append("&label=" + QUrl::toPercentEncoding(m_ui->m_payerLabel->text()));
+  } else if(!m_ui->m_payerLabel->text().isEmpty()){
+    requestUri.append("?label=" + QUrl::toPercentEncoding(m_ui->m_payerLabel->text()));
+  }
+
+  ShowPaymentRequestDialog dlg(&MainWindow::instance());
+  dlg.setData(requestUri);
+  dlg.exec();
 }
 
 }

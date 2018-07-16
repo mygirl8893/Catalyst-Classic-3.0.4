@@ -2,7 +2,12 @@
 #include <QReadWriteLock>
 #include <QThread>
 
+#include <CryptoNoteConfig.h>
+
 #include <crypto/hash.h>
+
+#include "NodeAdapter.h"
+#include "CryptoNoteWrapper.h"
 
 #include "Worker.h"
 
@@ -45,7 +50,7 @@ void Worker::run() {
     localNonce = ++m_nonce;
     localJob.blob.replace(39, sizeof(localNonce), reinterpret_cast<char*>(&localNonce), sizeof(localNonce));
     std::memset(&hash, 0, sizeof(hash));
-    Crypto::cn_slow_hash(context, localJob.blob.data(), localJob.blob.size(), hash);
+    Crypto::cn_slow_hash(context, localJob.blob.data(), localJob.blob.size(), hash, NodeAdapter::instance().getCurrentBlockMajorVersion() < CURRENT_BLOCK_MAJOR + 2 ? 0 : 1);
     ++m_hashCounter;
     if (Q_UNLIKELY(((quint32*)&hash)[7] < localJob.target)) {
       m_observer->processShare(localJob.jobId, localNonce, QByteArray(reinterpret_cast<char*>(&hash), sizeof(hash)));

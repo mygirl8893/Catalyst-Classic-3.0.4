@@ -61,6 +61,8 @@ DepositsFrame::DepositsFrame(QWidget* _parent) : QFrame(_parent), m_ui(new Ui::D
     this, &DepositsFrame::pendingDepositBalanceUpdated, Qt::QueuedConnection);
   connect(&WalletAdapter::instance(), &WalletAdapter::walletCloseCompletedSignal, this, &DepositsFrame::reset,
     Qt::QueuedConnection);
+  connect(&WalletAdapter::instance(), &WalletAdapter::walletActualBalanceUpdatedSignal, this, &DepositsFrame::walletActualBalanceUpdated,
+    Qt::QueuedConnection);
 
   reset();
 }
@@ -131,6 +133,10 @@ void DepositsFrame::withdrawClicked() {
   }
 
   WalletAdapter::instance().withdrawUnlockedDeposits(depositIds, CurrencyAdapter::instance().getMinimumFee());
+}
+
+void DepositsFrame::walletActualBalanceUpdated(quint64 _balance) {
+  m_ui->m_balanceLabel->setText(CurrencyAdapter::instance().formatAmount(_balance));
 }
 
 }

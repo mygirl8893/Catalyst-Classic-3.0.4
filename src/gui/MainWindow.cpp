@@ -1,11 +1,19 @@
 #include <QCloseEvent>
 #include <QFileDialog>
+#include <QStandardPaths>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QSystemTrayIcon>
+#include <QDesktopServices>
 #include <QTimer>
+#include <QDebug>
+#include <QDateTime>
+#include <QFontDatabase>
+#include <QToolButton>
+#include <QPushButton>
 
 #include <common/Base58.h>
+#include <common/StringTools.h>
 #include <common/Util.h>
 
 #include "AboutDialog.h"
@@ -15,14 +23,17 @@
 #include "CurrencyAdapter.h"
 #include "ExitWidget.h"
 #include "ImportKeyDialog.h"
+#include "ExportTrackingKeyDialog.h"
+#include "ImportTrackingKeyDialog.h"
 #include "MainWindow.h"
-#include "MessagesModel.h"
 #include "NewPasswordDialog.h"
 #include "NodeAdapter.h"
 #include "PasswordDialog.h"
 #include "Settings.h"
 #include "WalletAdapter.h"
 #include "WalletEvents.h"
+#include "SendFrame.h"
+#include "InfoDialog.h"
 
 #include "ui_mainwindow.h"
 
@@ -41,9 +52,13 @@ MainWindow& MainWindow::instance() {
 MainWindow::MainWindow() : QMainWindow(), m_ui(new Ui::MainWindow), m_trayIcon(nullptr), m_tabActionGroup(new QActionGroup(this)),
   m_isAboutToQuit(false) {
   m_ui->setupUi(this);
-  m_connectionStateIconLabel = new QLabel(this);
+  m_connectionStateIconLabel = new QPushButton();
+  m_connectionStateIconLabel->setFlat(true); // Make the button look like a label, but clickable
+  m_connectionStateIconLabel->setStyleSheet(".QPushButton { background-color: rgba(255, 255, 255, 0);}");
+  m_connectionStateIconLabel->setMaximumSize(16, 16);
   m_encryptionStateIconLabel = new QLabel(this);
   m_synchronizationStateIconLabel = new AnimatedLabel(this);
+  m_trackingModeIconLabel = new QLabel(this);
 
   connectToSignals();
   initUi();
@@ -69,8 +84,7 @@ void MainWindow::connectToSignals() {
   });
   connect(&NodeAdapter::instance(), &NodeAdapter::peerCountUpdatedSignal, this, &MainWindow::peerCountUpdated, Qt::QueuedConnection);
   connect(m_ui->m_exitAction, &QAction::triggered, qApp, &QApplication::quit);
-  //connect(m_ui->m_messagesFrame, &MessagesFrame::replyToSignal, this, &MainWindow::replyTo);
-  connect(m_ui->m_addressBookFrame, &AddressBookFrame::payToSignal, this, &MainWindow::payTo);
+  connect(m_ui->m_sendFrame, &SendFrame::uriOpenSignal, this, &MainWindow::onUriOpenSignal, Qt::QueuedConnection);
 }
 
 void MainWindow::initUi() {
@@ -88,8 +102,6 @@ void MainWindow::initUi() {
   m_ui->m_receiveFrame->hide();
   m_ui->m_transactionsFrame->hide();
   m_ui->m_addressBookFrame->hide();
-  //m_ui->m_messagesFrame->hide();
-  //m_ui->m_sendMessageFrame->hide();
   m_ui->m_miningFrame->hide();
   m_ui->m_depositsFrame->hide();
 
@@ -98,8 +110,6 @@ void MainWindow::initUi() {
   m_tabActionGroup->addAction(m_ui->m_receiveAction);
   m_tabActionGroup->addAction(m_ui->m_transactionsAction);
   m_tabActionGroup->addAction(m_ui->m_addressBookAction);
-  //m_tabActionGroup->addAction(m_ui->m_messagesAction);
-  //m_tabActionGroup->addAction(m_ui->m_sendMessageAction);
   m_tabActionGroup->addAction(m_ui->m_miningAction);
   m_tabActionGroup->addAction(m_ui->m_depositsAction);
 
@@ -109,7 +119,8 @@ void MainWindow::initUi() {
   statusBar()->addPermanentWidget(m_encryptionStateIconLabel);
   statusBar()->addPermanentWidget(m_synchronizationStateIconLabel);
   qobject_cast<AnimatedLabel*>(m_synchronizationStateIconLabel)->setSprite(QPixmap(":icons/sync_sprite"), QSize(16, 16), 5, 24);
-  m_connectionStateIconLabel->setPixmap(QPixmap(":icons/disconnected").scaled(16, 16, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+  m_connectionStateIconLabel->setIcon(QPixmap(":icons/disconnected").scaled(16, 16, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+  m_trackingModeIconLabel->setPixmap(QPixmap(":icons/tracking").scaledToHeight(16, Qt::SmoothTransformation));
 
 #ifdef Q_OS_MAC
   installDockHandler();
@@ -295,6 +306,15 @@ void MainWindow::importKey() {
   }
 }
 
+void MainWindow::isTrackingMode() {
+  m_ui->m_sendFrame->hide();
+  m_ui->m_overviewAction->trigger();
+  m_ui->m_sendAction->setEnabled(false);
+  m_ui->m_openUriAction->setEnabled(false);
+  //m_ui->m_showMnemonicSeedAction->setEnabled(false);
+  m_trackingModeIconLabel->show();
+}
+
 void MainWindow::backupWallet() {
   QString filePath = QFileDialog::getSaveFileName(this, tr("Backup wallet to..."),
   #ifdef Q_OS_WIN
@@ -321,6 +341,24 @@ void MainWindow::resetWallet() {
     WalletAdapter::instance().reset();
     WalletAdapter::instance().open("");
   }
+}
+
+void MainWindow::handlePaymentRequest(QString _request) {
+  if (Settings::instance().isTrackingMode()) {
+      isTrackingMode();
+      return;
+  }
+  m_ui->m_sendAction->trigger();
+  m_ui->m_sendFrame->parsePaymentRequest(_request);
+  QWidget::activateWindow();
+}
+
+void MainWindow::onUriOpenSignal() {
+  if (Settings::instance().isTrackingMode()) {
+      isTrackingMode();
+      return;
+  }
+  m_ui->m_sendAction->trigger();
 }
 
 void MainWindow::encryptWallet() {
@@ -413,7 +451,7 @@ void MainWindow::encryptedFlagChanged(bool _encrypted) {
 void MainWindow::peerCountUpdated(quint64 _peerCount) {
   QString connectionIconPath = _peerCount > 0 ? ":icons/connected" : ":icons/disconnected";
   QPixmap connectionIcon = QPixmap(connectionIconPath).scaled(16, 16, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-  m_connectionStateIconLabel->setPixmap(connectionIcon);
+  m_connectionStateIconLabel->setIcon(connectionIcon);
   m_connectionStateIconLabel->setToolTip(QString(tr("%1 peers").arg(_peerCount)));
 }
 
@@ -436,6 +474,7 @@ void MainWindow::walletOpened(bool _error, const QString& _error_text) {
     m_synchronizationStateIconLabel->show();
     m_ui->m_backupWalletAction->setEnabled(true);
     m_ui->m_resetAction->setEnabled(true);
+    m_ui->m_openUriAction->setEnabled(true);
     encryptedFlagChanged(Settings::instance().isEncrypted());
 
     QList<QAction*> tabActions = m_tabActionGroup->actions();
@@ -443,7 +482,19 @@ void MainWindow::walletOpened(bool _error, const QString& _error_text) {
       action->setEnabled(true);
     }
 
-    m_ui->m_overviewAction->trigger();
+    m_ui->m_overviewAction->toggle();
+    encryptedFlagChanged(false);
+    statusBar()->addPermanentWidget(m_trackingModeIconLabel);
+    m_trackingModeIconLabel->setPixmap(QPixmap(":icons/tracking").scaledToHeight(16, Qt::SmoothTransformation));
+    m_trackingModeIconLabel->hide();
+    m_trackingModeIconLabel->setToolTip(tr("トラッキングウォレット。 支出は利用できません"));
+    QString connection = Settings::instance().getConnection();
+
+  //if(connection.compare("remote") == 0) {
+    //m_remoteModeIconLabel->show();
+    //m_remoteModeIconLabel->setPixmap(QPixmap(":icons/remote_mode").scaledToHeight(16, Qt::SmoothTransformation));
+  //}
+
     m_ui->m_overviewFrame->show();
   } else {
     walletClosed();
@@ -454,31 +505,21 @@ void MainWindow::walletClosed() {
   m_ui->m_backupWalletAction->setEnabled(false);
   m_ui->m_encryptWalletAction->setEnabled(false);
   m_ui->m_changePasswordAction->setEnabled(false);
+  m_ui->m_openUriAction->setEnabled(false);
   m_ui->m_overviewFrame->hide();
   m_ui->m_sendFrame->hide();
   m_ui->m_transactionsFrame->hide();
   m_ui->m_addressBookFrame->hide();
-  //m_ui->m_messagesFrame->hide();
-  //m_ui->m_sendMessageFrame->hide();
   m_ui->m_miningFrame->hide();
   m_ui->m_depositsFrame->hide();
   m_ui->m_resetAction->setEnabled(false);
   m_encryptionStateIconLabel->hide();
+  m_trackingModeIconLabel->hide();
   m_synchronizationStateIconLabel->hide();
   QList<QAction*> tabActions = m_tabActionGroup->actions();
   Q_FOREACH(auto action, tabActions) {
     action->setEnabled(false);
   }
-}
-
-//void MainWindow::replyTo(const QModelIndex& _index) {
-  //m_ui->m_sendMessageFrame->setAddress(_index.data(MessagesModel::ROLE_HEADER_REPLY_TO).toString());
-  //m_ui->m_sendMessageAction->trigger();
-//}
-
-void MainWindow::payTo(const QModelIndex& _index) {
-  m_ui->m_sendFrame->setAddress(_index.data(AddressBookModel::ROLE_ADDRESS).toString());
-  m_ui->m_sendAction->trigger();
 }
 
 #ifdef Q_OS_WIN

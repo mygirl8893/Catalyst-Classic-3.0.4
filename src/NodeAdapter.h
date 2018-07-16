@@ -39,6 +39,17 @@ public:
   quint64 getLastKnownBlockHeight() const;
   quint64 getLastLocalBlockHeight() const;
   QDateTime getLastLocalBlockTimestamp() const;
+  quint64 getDifficulty();
+  quint64 getTxCount();
+  quint64 getTxPoolSize();
+  quint64 getAltBlocksCount();
+  quint64 getConnectionsCount();
+  quint64 getOutgoingConnectionsCount();
+  quint64 getIncomingConnectionsCount();
+  quint64 getWhitePeerlistSize();
+  quint64 getGreyPeerlistSize();
+  uint8_t getCurrentBlockMajorVersion();
+  CryptoNote::BlockHeaderInfo getLastLocalBlockHeaderInfo();
   void peerCountUpdated(Node& _node, size_t _count) Q_DECL_OVERRIDE;
   void localBlockchainUpdated(Node& _node, uint64_t _height) Q_DECL_OVERRIDE;
   void lastKnownBlockHeightUpdated(Node& _node, uint64_t _height) Q_DECL_OVERRIDE;
@@ -66,6 +77,7 @@ Q_SIGNALS:
   void initNodeSignal(Node** _node, const CryptoNote::Currency* currency, INodeCallback* _callback, Logging::LoggerManager* _loggerManager,
     const CryptoNote::CoreConfig& _coreConfig, const CryptoNote::NetNodeConfig& _netNodeConfig);
   void deinitNodeSignal(Node** _node);
+  void connectionFailedSignal();
 };
 
 }

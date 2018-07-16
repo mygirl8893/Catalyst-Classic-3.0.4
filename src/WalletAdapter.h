@@ -20,10 +20,13 @@ public:
   static WalletAdapter& instance();
 
   void open(const QString& _password);
+  void createWallet();
+  void createNonDeterministic();
   void createWithKeys(const CryptoNote::AccountKeys& _keys);
   void close();
   bool save(bool _details, bool _cache);
   void backup(const QString& _file);
+  void autoBackup();
   void reset();
 
   QString getAddress() const;
@@ -92,6 +95,7 @@ private:
   bool openFile(const QString& _file, bool _read_only);
   void closeFile();
   void notifyAboutLastTransaction();
+  QString walletErrorMessage(int _error_code);
 
   static void renameFile(const QString& _old_name, const QString& _new_name);
   Q_SLOT void updateBlockStatusText();

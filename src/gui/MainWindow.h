@@ -1,9 +1,12 @@
 #pragma once
 
 #include <QLabel>
+#include <QPushButton>
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QTimer>
+
+#include "PaymentServer.h"
 
 class QActionGroup;
 
@@ -20,6 +23,8 @@ class MainWindow : public QMainWindow {
 public:
   static MainWindow& instance();
   void scrollToTransaction(const QModelIndex& _index);
+  void handlePaymentRequest(QString _request);
+  void isTrackingMode();
   void quit();
 
 protected:
@@ -27,10 +32,13 @@ protected:
   bool event(QEvent* _event) Q_DECL_OVERRIDE;
 
 private:
+  PaymentServer* paymentServer;
+
   QScopedPointer<Ui::MainWindow> m_ui;
-  QLabel* m_connectionStateIconLabel;
+  QPushButton* m_connectionStateIconLabel;
   QLabel* m_encryptionStateIconLabel;
   QLabel* m_synchronizationStateIconLabel;
+  QLabel* m_trackingModeIconLabel;
   QSystemTrayIcon* m_trayIcon;
   QActionGroup* m_tabActionGroup;
   bool m_isAboutToQuit;
@@ -53,9 +61,8 @@ private:
   void walletSynchronized(int _error, const QString& _error_text);
   void walletOpened(bool _error, const QString& _error_text);
   void walletClosed();
-  void replyTo(const QModelIndex& _index);
-  void payTo(const QModelIndex& _index);
   void reset();
+  void onUriOpenSignal();
 
   Q_SLOT void createWallet();
   Q_SLOT void openWallet();

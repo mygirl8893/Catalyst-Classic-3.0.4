@@ -18,6 +18,11 @@ public:
 
   QString getAddress() const;
   QString getLabel() const;
+  QString getPaymentID() const;
+
+  void setEditLabel(QString label);
+  void setEditAddress(QString address);
+  void setEditPaymentId(QString paymentid);
 
 private:
   QScopedPointer<Ui::NewAddressDialog> m_ui;

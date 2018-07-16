@@ -119,23 +119,53 @@ void WalletAdapter::open(const QString& _password) {
       }
     }
 
-    if (openFile(Settings::instance().getWalletFile(), true)) {
-      try {
-        m_wallet->initAndLoad(m_file, _password.toStdString());
-      } catch (std::system_error&) {
-        closeFile();
-        delete m_wallet;
-        m_wallet = nullptr;
+    if (Settings::instance().getWalletFile().endsWith(".wallet")) {
+      if (openFile(Settings::instance().getWalletFile(), true)) {
+        try {
+          m_wallet->initAndLoad(m_file, _password.toStdString());
+        } catch (std::system_error&) {
+          closeFile();
+          delete m_wallet;
+          m_wallet = nullptr;
+        }
       }
     }
+
   } else {
-    Settings::instance().setEncrypted(false);
-    try {
-      m_wallet->initAndGenerate("");
-    } catch (std::system_error&) {
-      delete m_wallet;
-      m_wallet = nullptr;
+    createWallet();
+  }
+}
+
+void WalletAdapter::createWallet() {
+  Q_ASSERT(m_wallet == nullptr);
+  Settings::instance().setEncrypted(false);
+  Q_EMIT walletStateChangedSignal(tr("Create wallet"));
+  m_wallet = NodeAdapter::instance().createWallet();
+  m_wallet->addObserver(this);
+
+  try {
+    m_wallet->initAndGenerateDeterministic("");
+
+    VerifyMnemonicSeedDialog dlg(nullptr);
+    if (!dlg.exec() == QDialog::Accepted) {
+      return;
     }
+
+  } catch (std::system_error&) {
+    delete m_wallet;
+    m_wallet = nullptr;
+  }
+}
+
+void WalletAdapter::createNonDeterministic() {
+  m_wallet = NodeAdapter::instance().createWallet();
+  m_wallet->addObserver(this);
+  Settings::instance().setEncrypted(false);
+  try {
+    m_wallet->initAndGenerate("");
+  } catch (std::system_error&) {
+    delete m_wallet;
+    m_wallet = nullptr;
   }
 }
 
@@ -220,6 +250,17 @@ bool WalletAdapter::save(const QString& _file, bool _details, bool _cache) {
 void WalletAdapter::backup(const QString& _file) {
   if (save(_file.endsWith(".wallet") ? _file : _file + ".wallet", true, false)) {
     m_isBackupInProgress = true;
+  }
+}
+
+void WalletAdapter::autoBackup(){
+  QString source = Settings::instance().getWalletFile();
+  source.append(QString(".backup"));
+
+  if (!source.isEmpty() && !QFile::exists(source)) {
+    if (save(source, true, false)) {
+      m_isBackupInProgress = true;
+    }
   }
 }
 
@@ -366,6 +407,20 @@ bool WalletAdapter::changePassword(const QString& _oldPassword, const QString& _
   }
 
   Settings::instance().setEncrypted(!_newPassword.isEmpty());
+
+  QString source = Settings::instance().getWalletFile();
+  source.append(QString(".backup"));
+  if (!source.isEmpty()) {
+    // remove old unencrypted backup
+    if(QFile::exists(source)) {
+      QFile::remove(source);
+    }
+    // create new encrypted backup
+    if (save(source, true, false)) {
+      m_isBackupInProgress = true;
+    }
+  }
+
   return save(true, true);
 }
 
@@ -488,6 +543,41 @@ void WalletAdapter::sendTransactionCompleted(CryptoNote::TransactionId _transact
   Q_EMIT updateBlockStatusTextWithDelaySignal();
 }
 
+QString WalletAdapter::walletErrorMessage(int _error_code) {
+  switch (_error_code) {
+    case CryptoNote::error::WalletErrorCodes::NOT_INITIALIZED:               return tr("Object was not initialized");
+    case CryptoNote::error::WalletErrorCodes::WRONG_PASSWORD:                return tr("The password is wrong");
+    case CryptoNote::error::WalletErrorCodes::ALREADY_INITIALIZED:           return tr("The object is already initialized");
+    case CryptoNote::error::WalletErrorCodes::INTERNAL_WALLET_ERROR:         return tr("Internal error occurred");
+    case CryptoNote::error::WalletErrorCodes::MIXIN_COUNT_TOO_BIG:           return tr("MixIn count is too big");
+    case CryptoNote::error::WalletErrorCodes::BAD_ADDRESS:                   return tr("Bad address");
+    case CryptoNote::error::WalletErrorCodes::TRANSACTION_SIZE_TOO_BIG:      return tr("Transaction size is too big");
+    case CryptoNote::error::WalletErrorCodes::WRONG_AMOUNT:                  return tr("Wrong amount");
+    case CryptoNote::error::WalletErrorCodes::SUM_OVERFLOW:                  return tr("Sum overflow");
+    case CryptoNote::error::WalletErrorCodes::ZERO_DESTINATION:              return tr("The destination is empty");
+    case CryptoNote::error::WalletErrorCodes::TX_CANCEL_IMPOSSIBLE:          return tr("Impossible to cancel transaction");
+    case CryptoNote::error::WalletErrorCodes::WRONG_STATE:                   return tr("The wallet is in wrong state (maybe loading or saving), try again later");
+    case CryptoNote::error::WalletErrorCodes::OPERATION_CANCELLED:           return tr("The operation you've requested has been cancelled");
+    case CryptoNote::error::WalletErrorCodes::TX_TRANSFER_IMPOSSIBLE:        return tr("Transaction transfer impossible");
+    case CryptoNote::error::WalletErrorCodes::WRONG_VERSION:                 return tr("Wrong version");
+    case CryptoNote::error::WalletErrorCodes::FEE_TOO_SMALL:                 return tr("Transaction fee is too small");
+    case CryptoNote::error::WalletErrorCodes::KEY_GENERATION_ERROR:          return tr("Cannot generate new key");
+    case CryptoNote::error::WalletErrorCodes::INDEX_OUT_OF_RANGE:            return tr("Index is out of range");
+    case CryptoNote::error::WalletErrorCodes::ADDRESS_ALREADY_EXISTS:        return tr("Address already exists");
+    case CryptoNote::error::WalletErrorCodes::TRACKING_MODE:                 return tr("The wallet is in tracking mode");
+    case CryptoNote::error::WalletErrorCodes::WRONG_PARAMETERS:              return tr("Wrong parameters passed");
+    case CryptoNote::error::WalletErrorCodes::OBJECT_NOT_FOUND:              return tr("Object not found");
+    case CryptoNote::error::WalletErrorCodes::WALLET_NOT_FOUND:              return tr("Requested wallet not found");
+    case CryptoNote::error::WalletErrorCodes::CHANGE_ADDRESS_REQUIRED:       return tr("Change address required");
+    case CryptoNote::error::WalletErrorCodes::CHANGE_ADDRESS_NOT_FOUND:      return tr("Change address not found");
+    case CryptoNote::error::WalletErrorCodes::DESTINATION_ADDRESS_REQUIRED:  return tr("Destination address required");
+    case CryptoNote::error::WalletErrorCodes::DESTINATION_ADDRESS_NOT_FOUND: return tr("Destination address not found");
+    case CryptoNote::error::WalletErrorCodes::BAD_PAYMENT_ID:                return tr("Wrong payment id format");
+    case CryptoNote::error::WalletErrorCodes::BAD_TRANSACTION_EXTRA:         return tr("Wrong transaction extra format");
+    default:                                                                 return tr("Unknown error");
+  }
+}
+
 void WalletAdapter::onWalletSendTransactionCompleted(CryptoNote::TransactionId _transactionId, int _error, const QString& _errorText) {
   CryptoNote::WalletLegacyTransaction transaction;
   if (!this->getTransaction(_transactionId, transaction)) {
@@ -517,7 +607,13 @@ void WalletAdapter::unlock() {
 
 bool WalletAdapter::openFile(const QString& _file, bool _readOnly) {
   lock();
+
+#ifdef Q_OS_WIN
+  m_file.open(_file.toStdWString(), std::ios::binary | (_readOnly ? std::ios::in : (std::ios::out | std::ios::trunc)));
+#else
   m_file.open(_file.toStdString(), std::ios::binary | (_readOnly ? std::ios::in : (std::ios::out | std::ios::trunc)));
+#endif
+
   if (!m_file.is_open()) {
     unlock();
   }

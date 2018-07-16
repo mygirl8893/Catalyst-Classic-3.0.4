@@ -1,10 +1,10 @@
 #include "RecentTransactionsModel.h"
-#include "SortedTransactionsModel.h"
+#include "RecentSortedTransactionsModel.h"
 
 namespace WalletGui {
 
 RecentTransactionsModel::RecentTransactionsModel() : QSortFilterProxyModel() {
-  setSourceModel(&SortedTransactionsModel::instance());
+  setSourceModel(&RecentSortedTransactionsModel::instance());
   setDynamicSortFilter(true);
   connect(sourceModel(), &QAbstractItemModel::rowsInserted, this, &RecentTransactionsModel::invalidateFilter);
 }

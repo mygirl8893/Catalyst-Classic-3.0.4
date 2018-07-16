@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Select address</string>
+   <string>アドレスの選択</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -35,7 +35,11 @@
      <item>
       <widget class="QPushButton" name="m_okButton">
        <property name="text">
-        <string>Choose</string>
+        <string>choose</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/icons/add_recepient</normaloff>:/icons/add_recepient</iconset>
        </property>
       </widget>
      </item>
@@ -43,7 +47,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>m_okButton</sender>
