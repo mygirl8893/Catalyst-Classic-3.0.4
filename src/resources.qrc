@@ -37,5 +37,13 @@
         <file alias="splash">images/splash.png</file>
         <file alias="cryptonote">images/catalyst.png</file>
         <file alias="clock">images/clock.gif</file>
+        <file alias="bg.png">images/bg.png</file>
+        <file alias="handle.png">images/handle.png</file>
+    </qresource>
+    <qresource prefix="/skin">
+        <file>default.qss</file>
+    </qresource>
+    <qresource prefix="/fonts">
+        <file alias="mplusm">fonts/mplus-1m-medium.ttf</file>
     </qresource>
 </RCC>
