@@ -738,12 +738,14 @@ void MainWindow::setMiningOnLaunch(bool _on) {
 void MainWindow::setMinimizeToTray(bool _on) {
 #ifdef Q_OS_WIN
   Settings::instance().setMinimizeToTrayEnabled(_on);
+  m_ui->m_minimizeToTrayAction->setChecked(Settings::instance().isMinimizeToTrayEnabled());
 #endif
 }
 
 void MainWindow::setCloseToTray(bool _on) {
 #ifdef Q_OS_WIN
   Settings::instance().setCloseToTrayEnabled(_on);
+  m_ui->m_closeToTrayAction->setChecked(Settings::instance().isCloseToTrayEnabled());
 #endif
 }
 
