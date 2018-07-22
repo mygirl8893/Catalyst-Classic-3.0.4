@@ -17,18 +17,17 @@
 #include <common/Util.h>
 
 #include "AboutDialog.h"
-#include "AddressBookModel.h"
 #include "AnimatedLabel.h"
 #include "ChangePasswordDialog.h"
 #include "ChangeLanguageDialog.h"
 #include "ConnectionSettings.h"
 #include "PrivateKeysDialog.h"
-#include "CurrencyAdapter.h"
-#include "ExitWidget.h"
-#include "RestoreFromMnemonicSeedDialog.h"
-#include "ImportKeyDialog.h"
 #include "ExportTrackingKeyDialog.h"
 #include "ImportTrackingKeyDialog.h"
+#include "CurrencyAdapter.h"
+#include "ExitWidget.h"
+#include "ImportKeyDialog.h"
+#include "RestoreFromMnemonicSeedDialog.h"
 #include "MainWindow.h"
 #include "NewPasswordDialog.h"
 #include "NodeAdapter.h"
@@ -38,9 +37,8 @@
 #include "WalletEvents.h"
 #include "SendFrame.h"
 #include "InfoDialog.h"
-#include "MnemonicSeedDialog.h"
-
 #include "ui_mainwindow.h"
+#include "MnemonicSeedDialog.h"
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -115,7 +113,7 @@ void MainWindow::connectToSignals() {
 }
 
 void MainWindow::initUi() {
-  setWindowTitle(QString("%1 Wallet %2").arg(CurrencyAdapter::instance().getCurrencyDisplayName()).arg(Settings::instance().getVersion()));
+  setWindowTitle(QString("%1 Wallet %2").arg(Settings::instance().getVersion()));
 #ifdef Q_OS_WIN32
   createTrayIcon();
 #endif
@@ -197,7 +195,7 @@ void MainWindow::initUi() {
   m_ui->m_minimizeToTrayAction->setChecked(Settings::instance().isMinimizeToTrayEnabled());
   m_ui->m_closeToTrayAction->setChecked(Settings::instance().isCloseToTrayEnabled());
   toggleHideAction = new QAction(tr("&Show / Hide"), this);
-  toggleHideAction->setStatusTip(tr("メインウィンドウを表示または非表示にする"));
+  toggleHideAction->setStatusTip(tr("Show or hide the main window"));
   connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
 #endif
 
@@ -892,7 +890,7 @@ void MainWindow::checkTrackingMode() {
 void MainWindow::createTrayIcon() {
 #ifdef Q_OS_WIN
     m_trayIcon = new QSystemTrayIcon(QPixmap(":images/cryptonote"), this);
-    QString toolTip = QString(tr("財布 Catalyst %1")).arg(Settings::instance().getVersion());
+    QString toolTip = QString(tr("Catalyst Wallet %1")).arg(Settings::instance().getVersion());
     m_trayIcon->setToolTip(toolTip);
     m_trayIcon->show();
 #endif
