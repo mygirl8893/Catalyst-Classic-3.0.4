@@ -104,11 +104,11 @@ int main(int argc, char* argv[]) {
   }
 
   //Create registry entries for URL execution
-  QSettings evoKey("HKEY_CLASSES_ROOT\\Catalyst", QSettings::NativeFormat);
-  evoKey.setValue(".", "Catalyst Wallet");
-  evoKey.setValue("URL Protocol", "");
-  QSettings evoOpenKey("HKEY_CLASSES_ROOT\\catalyst\\shell\\open\\command", QSettings::NativeFormat);
-  evoOpenKey.setValue(".", "\"" + QCoreApplication::applicationFilePath().replace("/", "\\") + "\" \"%1\"");
+  QSettings parsicoinKey("HKEY_CLASSES_ROOT\\Catalyst", QSettings::NativeFormat);
+  parsicoinKey.setValue(".", "Catalyst Wallet");
+  parsicoinKey.setValue("URL Protocol", "");
+  QSettings parsicoinOpenKey("HKEY_CLASSES_ROOT\\catalyst\\shell\\open\\command", QSettings::NativeFormat);
+  parsicoinOpenKey.setValue(".", "\"" + QCoreApplication::applicationFilePath().replace("/", "\\") + "\" \"%1\"");
 #endif
 
 #if defined(Q_OS_LINUX)
