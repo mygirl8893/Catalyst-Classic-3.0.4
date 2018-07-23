@@ -17,18 +17,17 @@
 #include <common/Util.h>
 
 #include "AboutDialog.h"
-#include "AddressBookModel.h"
 #include "AnimatedLabel.h"
 #include "ChangePasswordDialog.h"
 #include "ChangeLanguageDialog.h"
 #include "ConnectionSettings.h"
 #include "PrivateKeysDialog.h"
-#include "CurrencyAdapter.h"
-#include "ExitWidget.h"
-#include "RestoreFromMnemonicSeedDialog.h"
-#include "ImportKeyDialog.h"
 #include "ExportTrackingKeyDialog.h"
 #include "ImportTrackingKeyDialog.h"
+#include "CurrencyAdapter.h"
+#include "ExitWidget.h"
+#include "ImportKeyDialog.h"
+#include "RestoreFromMnemonicSeedDialog.h"
 #include "MainWindow.h"
 #include "NewPasswordDialog.h"
 #include "NodeAdapter.h"
@@ -38,9 +37,8 @@
 #include "WalletEvents.h"
 #include "SendFrame.h"
 #include "InfoDialog.h"
-#include "MnemonicSeedDialog.h"
-
 #include "ui_mainwindow.h"
+#include "MnemonicSeedDialog.h"
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -88,9 +86,9 @@ MainWindow::~MainWindow() {
   delete paymentServer;
   paymentServer = 0;
   //if(m_trayIcon) // Hide tray icon, as deleting will let it linger until quit (on Ubuntu)
-  // m_trayIcon->hide();
+  //  m_trayIcon->hide();
   #ifdef Q_OS_MAC
-     MacDockIconHandler::cleanup();
+    MacDockIconHandler::cleanup();
   #endif
 }
 
@@ -119,7 +117,7 @@ void MainWindow::initUi() {
 #ifdef Q_OS_WIN32
   createTrayIcon();
 #endif
-  
+
   m_ui->accountToolBar->setAllowedAreas(Qt::TopToolBarArea);
 
   accountWidget = m_ui->accountToolBar->addWidget(m_ui->m_accountFrame);
@@ -162,11 +160,11 @@ void MainWindow::initUi() {
   m_trackingModeIconLabel->setPixmap(QPixmap(":icons/tracking").scaledToHeight(16, Qt::SmoothTransformation));
   m_remoteModeIconLabel->hide();
   m_trackingModeIconLabel->hide();
-  m_trackingModeIconLabel->setToolTip(tr("トラッキングウォレット。 支出は利用できません"));
-  m_remoteModeIconLabel->setToolTip(tr("リモートノード経由で接続"));
+  m_trackingModeIconLabel->setToolTip(tr("Tracking wallet. Spending unawailable"));
+  m_remoteModeIconLabel->setToolTip(tr("Connected through remote node"));
 
   QString connection = Settings::instance().getConnection();
-  if(connection.compare("遠隔の") == 0) {
+  if(connection.compare("remote") == 0) {
     m_remoteModeIconLabel->show();
     m_remoteModeIconLabel->setPixmap(QPixmap(":icons/remote_mode").scaledToHeight(16, Qt::SmoothTransformation));
   }
@@ -197,7 +195,7 @@ void MainWindow::initUi() {
   m_ui->m_minimizeToTrayAction->setChecked(Settings::instance().isMinimizeToTrayEnabled());
   m_ui->m_closeToTrayAction->setChecked(Settings::instance().isCloseToTrayEnabled());
   toggleHideAction = new QAction(tr("&Show / Hide"), this);
-  toggleHideAction->setStatusTip(tr("メインウィンドウを表示または非表示にする"));
+  toggleHideAction->setStatusTip(tr("Show or hide the main window"));
   connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
 #endif
 
@@ -217,11 +215,11 @@ void MainWindow::scrollToTransaction(const QModelIndex& _index) {
 
 void MainWindow::quit() {
   if (!m_isAboutToQuit) {
-    NodeAdapter::instance().stopSoloMining();
+    //NodeAdapter::instance().stopSoloMining();
     ExitWidget* exitWidget = new ExitWidget(nullptr);
     exitWidget->show();
     m_isAboutToQuit = true;
-  if(m_trayIcon) // Hide tray icon, as deleting will let it linger until quit (on Ubuntu)
+    if(m_trayIcon) // Hide tray icon, as deleting will let it linger until quit (on Ubuntu)
        m_trayIcon->hide();
     close();
   }
@@ -428,7 +426,7 @@ void MainWindow::importTrackingKey() {
       return;
     }
     if (keyString.size() != 256) {
-      QMessageBox::warning(this, tr("Invalid tracking"), tr("The tracking key entered is invalid."), QMessageBox::Ok);
+      QMessageBox::warning(this, tr("Tracking key is not valid"), tr("The tracking key you entered is not valid."), QMessageBox::Ok);
       return;
     }
 
@@ -459,19 +457,19 @@ void MainWindow::importTrackingKey() {
 
     size_t size;
     if (!Common::fromHex(public_spend_key_string, &public_spend_key_hash, sizeof(public_spend_key_hash), size) || size != sizeof(public_spend_key_hash)) {
-      QMessageBox::warning(this, tr("Invalid tracking"), tr("The public spending key entered is invalid."), QMessageBox::Ok);
+      QMessageBox::warning(this, tr("Key is not valid"), tr("The public spend key you entered is not valid."), QMessageBox::Ok);
       return;
     }
     if (!Common::fromHex(public_view_key_string, &public_view_key_hash, sizeof(public_view_key_hash), size) || size != sizeof(public_view_key_hash)) {
-      QMessageBox::warning(this, tr("Invalid tracking"), tr("The public view key you entered is invalid."), QMessageBox::Ok);
+      QMessageBox::warning(this, tr("Key is not valid"), tr("The public view key you entered is not valid."), QMessageBox::Ok);
       return;
     }
     if (!Common::fromHex(private_spend_key_string, &private_spend_key_hash, sizeof(private_spend_key_hash), size) || size != sizeof(private_spend_key_hash)) {
-      QMessageBox::warning(this, tr("Invalid tracking"), tr("Private expenses you entered are not valid."), QMessageBox::Ok);
+      QMessageBox::warning(this, tr("Key is not valid"), tr("The private spend key you entered is not valid."), QMessageBox::Ok);
       return;
     }
     if (!Common::fromHex(private_view_key_string, &private_view_key_hash, sizeof(private_view_key_hash), size) || size != sizeof(private_spend_key_hash)) {
-      QMessageBox::warning(this, tr("Invalid tracking"), tr("The Private View key entered is invalid."), QMessageBox::Ok);
+      QMessageBox::warning(this, tr("Key is not valid"), tr("The private view key you entered is not valid."), QMessageBox::Ok);
       return;
     }
 
@@ -500,7 +498,7 @@ void MainWindow::isTrackingMode() {
   m_ui->m_overviewAction->trigger();
   m_ui->m_sendAction->setEnabled(false);
   m_ui->m_openUriAction->setEnabled(false);
-  //m_ui->m_showMnemonicSeedAction->setEnabled(false);
+  m_ui->m_showMnemonicSeedAction->setEnabled(false);
   m_trackingModeIconLabel->show();
 }
 
@@ -531,7 +529,7 @@ void MainWindow::restoreFromMnemonicSeed() {
       WalletAdapter::instance().setWalletFile(filePath);
       WalletAdapter::instance().createWithKeys(keys);
     } else {
-      QMessageBox::critical(nullptr, tr("Mnemonic seed is incorrect"), tr("There must be an error in the mnemonic seed. Please confirm that you typed it correctly."), QMessageBox::Ok);
+      QMessageBox::critical(nullptr, tr("Mnemonic seed is not correct"), tr("There must be an error in mnemonic seed. Make sure you entered it correctly."), QMessageBox::Ok);
       return;
     }
   }
@@ -543,27 +541,8 @@ void MainWindow::ChangeLanguage() {
   if (dlg.exec() == QDialog::Accepted) {
     QString language = dlg.getLang();
     Settings::instance().setLanguage((language));
-    QMessageBox::information(this, tr("Language changed"), tr("Restarting Wallet will change the language."), QMessageBox::Ok);
+    QMessageBox::information(this, tr("Language was changed"), tr("The language will be changed after restarting the wallet."), QMessageBox::Ok);
   }
-}
-
-void MainWindow::backupWallet() {
-  QString filePath = QFileDialog::getSaveFileName(this, tr("Backup wallet to..."),
-  #ifdef Q_OS_WIN
-      //QApplication::applicationDirPath(),
-        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
-  #else
-      QDir::homePath(),
-  #endif
-      tr("Wallets (*.wallet)")
-      );
-    if (!filePath.isEmpty() && !filePath.endsWith(".wallet")) {
-      filePath.append(".wallet");
-    }
-
-    if (!filePath.isEmpty() && !QFile::exists(filePath)) {
-      WalletAdapter::instance().backup(filePath);
-    }
 }
 
 void MainWindow::DisplayCmdLineHelp() {
@@ -572,7 +551,7 @@ void MainWindow::DisplayCmdLineHelp() {
     QMessageBox *msg = new QMessageBox(QMessageBox::Information, QObject::tr("Help"),
                        cmdLineParser.getHelpText(),
                        QMessageBox::Ok, this);
-    msg->setInformativeText(tr("For details, please refer to the section of www.catalyst.cash."));
+    msg->setInformativeText(tr("More info can be found at www.catalyst.cash in Documentation section"));
     QFont font = QFontDatabase::systemFont(QFontDatabase::FixedFont);
     msg->setFont(font);
     QSpacerItem* horizontalSpacer = new QSpacerItem(650, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -598,13 +577,32 @@ void MainWindow::openConnectionSettings() {
       quint16 daemonPort = dlg.setLocalDaemonPort();
       Settings::instance().setCurrentLocalDaemonPort(daemonPort);
 
-      QMessageBox::information(this, tr("Connection setting changed"), tr("Restart wallet to change connection mode."), QMessageBox::Ok);
+      QMessageBox::information(this, tr("Connection settings changed"), tr("Connection mode will be changed after restarting the wallet."), QMessageBox::Ok);
     }
 }
 
 void MainWindow::showStatusInfo() {
   InfoDialog dlg(this);
   dlg.exec();
+}
+
+void MainWindow::backupWallet() {
+  QString filePath = QFileDialog::getSaveFileName(this, tr("Backup wallet to..."),
+  #ifdef Q_OS_WIN
+      //QApplication::applicationDirPath(),
+        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+  #else
+      QDir::homePath(),
+  #endif
+      tr("Wallets (*.wallet)")
+      );
+    if (!filePath.isEmpty() && !filePath.endsWith(".wallet")) {
+      filePath.append(".wallet");
+    }
+
+    if (!filePath.isEmpty() && !QFile::exists(filePath)) {
+      WalletAdapter::instance().backup(filePath);
+    }
 }
 
 void MainWindow::resetWallet() {
@@ -793,7 +791,7 @@ void MainWindow::peerCountUpdated(quint64 _peerCount) {
   QString connectionIconPath = _peerCount > 0 ? ":icons/connected" : ":icons/disconnected";
   QPixmap connectionIcon = QPixmap(connectionIconPath).scaled(16, 16, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
   m_connectionStateIconLabel->setIcon(connectionIcon);
-  m_connectionStateIconLabel->setToolTip(QString(tr("%1 peers").arg(_peerCount)));
+  m_connectionStateIconLabel->setToolTip(QString(tr("%n active connection(s)", "", _peerCount)));
 }
 
 void MainWindow::walletSynchronizationInProgress() {
@@ -834,6 +832,7 @@ void MainWindow::walletOpened(bool _error, const QString& _error_text) {
     accountWidget->setVisible(true);
     m_ui->m_overviewFrame->show();
     m_ui->m_receiveFrame->closePaymentRequestForm();
+
     checkTrackingMode();
     updateRecentActionList();
 
@@ -842,10 +841,10 @@ void MainWindow::walletOpened(bool _error, const QString& _error_text) {
     }
 
     WalletAdapter::instance().autoBackup();
- 
-   } else {
-     walletClosed();
-   }
+
+  } else {
+    walletClosed();
+  }
 }
 
 void MainWindow::walletClosed() {
@@ -864,9 +863,8 @@ void MainWindow::walletClosed() {
   m_ui->m_sendFrame->hide();
   m_ui->m_transactionsFrame->hide();
   m_ui->m_addressBookFrame->hide();
-  m_ui->m_miningFrame->hide();
+  //m_ui->m_miningFrame->hide();
   m_ui->m_depositsFrame->hide();
-  m_ui->m_resetAction->setEnabled(false);
   m_encryptionStateIconLabel->hide();
   m_trackingModeIconLabel->hide();
   m_synchronizationStateIconLabel->hide();
@@ -892,7 +890,7 @@ void MainWindow::checkTrackingMode() {
 void MainWindow::createTrayIcon() {
 #ifdef Q_OS_WIN
     m_trayIcon = new QSystemTrayIcon(QPixmap(":images/cryptonote"), this);
-    QString toolTip = QString(tr("財布 Catalyst %1")).arg(Settings::instance().getVersion());
+    QString toolTip = QString(tr("Catalyst Wallet %1")).arg(Settings::instance().getVersion());
     m_trayIcon->setToolTip(toolTip);
     m_trayIcon->show();
 #endif
@@ -941,8 +939,7 @@ void MainWindow::createTrayIconMenu() {
 
 #ifdef Q_OS_WIN
 void MainWindow::trayActivated(QSystemTrayIcon::ActivationReason reason) {
-    if(reason == QSystemTrayIcon::Trigger)
-    {
+    if(reason == QSystemTrayIcon::Trigger) {
         // Click on system tray icon triggers show/hide of the main window
         toggleHidden();
     }
@@ -961,15 +958,20 @@ void MainWindow::minimizeToTray(bool _on) {
 #endif
 
 void MainWindow::showNormalIfMinimized(bool fToggleHidden) {
-    if (isHidden() || isMinimized()) {
+    if (isHidden() || isMinimized())
+    {
         showNormal();
         activateWindow();
-    } else if (isObscured(this)) {
+    }
+    else if (isObscured(this))
+    {
         raise();
         activateWindow();
-    } else if (fToggleHidden) {
+    }
+    else if (fToggleHidden) {
         hide();
-    } else {
+    }
+    else {
         showNormal();
         activateWindow();
     }

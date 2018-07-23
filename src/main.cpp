@@ -8,7 +8,6 @@
 #include <QSplashScreen>
 #include <QStyleFactory>
 #include <QSettings>
-#include <QTextCodec>
 
 #include "CommandLineParser.h"
 #include "CurrencyAdapter.h"
@@ -17,11 +16,11 @@
 #include "Settings.h"
 #include "SignalHandler.h"
 #include "WalletAdapter.h"
-#include "contrib.hpp"
-#include "Update.h"
-#include "PaymentServer.h"
-
 #include "gui/MainWindow.h"
+#include "Update.h"
+#include <QTextCodec>
+#include "PaymentServer.h"
+#include "contrib.hpp"
 
 #define DEBUG 1
 
@@ -130,6 +129,7 @@ int main(int argc, char* argv[]) {
   LoggerAdapter::instance().init();
 
   QString dataDirPath = Settings::instance().getDataDir().absolutePath();
+
   if (!QDir().exists(dataDirPath)) {
     QDir().mkpath(dataDirPath);
   }
@@ -140,8 +140,6 @@ int main(int argc, char* argv[]) {
     return 0;
   }
 
-  //QLocale::setDefault(QLocale::c());
-
   SignalHandler::instance().init();
   QObject::connect(&SignalHandler::instance(), &SignalHandler::quitSignal, &app, &QApplication::quit);
 
@@ -151,6 +149,7 @@ int main(int argc, char* argv[]) {
   }
 
   splash->showMessage(QObject::tr("Loading blockchain..."), Qt::AlignLeft | Qt::AlignBottom, Qt::white);
+
   app.processEvents();
   qRegisterMetaType<CryptoNote::TransactionId>("CryptoNote::TransactionId");
   qRegisterMetaType<quintptr>("quintptr");
@@ -159,6 +158,7 @@ int main(int argc, char* argv[]) {
   }
 
   splash->finish(&MainWindow::instance());
+
   Updater d;
     d.checkForUpdate();
   MainWindow::instance().show();
