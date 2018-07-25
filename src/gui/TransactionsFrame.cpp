@@ -33,6 +33,8 @@ TransactionsFrame::TransactionsFrame(QWidget* _parent) : QFrame(_parent), m_ui(n
   m_ui->m_transactionsView->header()->resizeSection(TransactionsModel::COLUMN_PAYMENT_ID, 200);
   m_ui->m_transactionsView->header()->resizeSection(TransactionsModel::COLUMN_HASH, 200);
 
+  connect(m_ui->m_transactionsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &TransactionsFrame::computeSelected);
+
   m_ui->m_transactionsView->setContextMenuPolicy(Qt::CustomContextMenu);
   connect(m_ui->m_transactionsView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
   connect(&WalletAdapter::instance(), &WalletAdapter::walletCloseCompletedSignal, this, &TransactionsFrame::walletClosed);
@@ -253,7 +255,7 @@ void TransactionsFrame::chooseDate(int idx) {
                 SortedTransactionsModel::MAX_DATE);
 
         } 
-        
+       
         break;
     case ThisMonth:
         SortedTransactionsModel::instance().setDateRange(

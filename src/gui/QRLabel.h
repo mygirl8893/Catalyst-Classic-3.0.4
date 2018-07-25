@@ -29,6 +29,7 @@ protected:
 private:
     QMenu* contextMenu;
     QString m_qrString;
+
 };
 
 }

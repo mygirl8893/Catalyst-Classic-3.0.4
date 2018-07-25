@@ -5,10 +5,8 @@
 #include <QClipboard>
 #include <QApplication>
 #include <QFileDialog>
-
-#include "MainWindow.h"
 #include "qrencode.h"
-
+#include "MainWindow.h"
 #include "QRLabel.h"
 
 namespace WalletGui {
@@ -49,13 +47,15 @@ void QRLabel::showQRCode(const QString& _dataString) {
   setEnabled(true);
 }
 
-QImage QRLabel::exportImage() {
+QImage QRLabel::exportImage()
+{
     if (!pixmap())
         return QImage();
     return pixmap()->toImage();
 }
 
-void QRLabel::mousePressEvent(QMouseEvent* event) {
+void QRLabel::mousePressEvent(QMouseEvent* event)
+{
     if (event->button() == Qt::LeftButton && pixmap()) {
         event->accept();
         QMimeData* mimeData = new QMimeData;
@@ -70,7 +70,8 @@ void QRLabel::mousePressEvent(QMouseEvent* event) {
     }
 }
 
-void QRLabel::saveImage() {
+void QRLabel::saveImage()
+{
     if (!pixmap())
         return;
     QString fn = QFileDialog::getSaveFileName(&MainWindow::instance(), tr("Save QR Code"), QDir::homePath(), "PNG (*.png)");
@@ -79,13 +80,15 @@ void QRLabel::saveImage() {
     }
 }
 
-void QRLabel::copyImage() {
+void QRLabel::copyImage()
+{
     if (!pixmap())
         return;
     QApplication::clipboard()->setImage(exportImage());
 }
 
-void QRLabel::contextMenuEvent(QContextMenuEvent* event) {
+void QRLabel::contextMenuEvent(QContextMenuEvent* event)
+{
     if (!pixmap())
         return;
     contextMenu->exec(event->globalPos());

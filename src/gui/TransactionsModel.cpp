@@ -7,6 +7,7 @@
 #include "CurrencyAdapter.h"
 #include "NodeAdapter.h"
 #include "TransactionsModel.h"
+#include "AddressBookModel.h"
 #include "WalletAdapter.h"
 
 namespace WalletGui {
@@ -351,23 +352,21 @@ QVariant TransactionsModel::getToolTipRole(const QModelIndex& _index) const {
 QVariant TransactionsModel::getDecorationRole(const QModelIndex& _index) const {
   if(_index.column() == COLUMN_STATE) {
     quint64 numberOfConfirmations = _index.data(ROLE_NUMBER_OF_CONFIRMATIONS).value<quint64>();
-    switch (numberOfConfirmations) {
-    case 0:
+    if(numberOfConfirmations == 0) {
       return QPixmap(":icons/unconfirmed");
-    case 1:
+    } else if(numberOfConfirmations < 2) {
       return QPixmap(":icons/clock1");
-    case 2:
+    } else if(numberOfConfirmations < 4) {
       return QPixmap(":icons/clock2");
-    case 3:
+    } else if(numberOfConfirmations < 6) {
       return QPixmap(":icons/clock3");
-    case 4:
+    } else if(numberOfConfirmations < 8) {
       return QPixmap(":icons/clock4");
-    case 5:
+    } else if(numberOfConfirmations < 10) {
       return QPixmap(":icons/clock5");
-    default:
+    } else {
       return QPixmap(":icons/transaction");
     }
-
   } else if (_index.column() == COLUMN_ADDRESS) {
     return _index.data(ROLE_ICON).value<QPixmap>().scaled(20, 20, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
   }

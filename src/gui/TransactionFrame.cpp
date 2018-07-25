@@ -26,7 +26,6 @@ public:
     case TransactionsModel::COLUMN_DATE:
       static_cast<QLabel*>(_editor)->setText(_index.data().toString());
       return;
-
     case TransactionsModel::COLUMN_TYPE:
       static_cast<QLabel*>(_editor)->setPixmap(_index.data(TransactionsModel::ROLE_ICON).value<QPixmap>());
       return;

@@ -1,7 +1,6 @@
 #include <QClipboard>
 #include <QTimer>
 #include <QFontDatabase>
-
 #include "AccountFrame.h"
 #include "WalletAdapter.h"
 #include "CurrencyAdapter.h"

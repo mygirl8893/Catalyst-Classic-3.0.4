@@ -1,5 +1,4 @@
-#include <QDebug>
-
+#include "ui_connectionsettingsdialog.h"
 #include "ConnectionSettings.h"
 #include "CurrencyAdapter.h"
 #include "NewNodeDialog.h"
@@ -7,7 +6,7 @@
 #include "NodeModel.h"
 #include "Settings.h"
 
-#include "ui_connectionsettingsdialog.h"
+#include <QDebug>
 
 namespace Ui {
 class ConnectionSettingsDialog;
@@ -28,7 +27,7 @@ ConnectionSettingsDialog::~ConnectionSettingsDialog() {
 
 void ConnectionSettingsDialog::initConnectionSettings() {
  QString connection = Settings::instance().getConnection();
-    if(connection.compare("Auto") == 0) {
+    if(connection.compare("auto") == 0) {
         m_ui->radioButton_1->setChecked(true);
     }
     else if(connection.compare("embedded") == 0) {
@@ -37,7 +36,7 @@ void ConnectionSettingsDialog::initConnectionSettings() {
     else if(connection.compare("local") == 0) {
        m_ui->radioButton_3->setChecked(true);
     }
-    else if(connection.compare("Remote") == 0) {
+    else if(connection.compare("remote") == 0) {
        m_ui->radioButton_4->setChecked(true);
     }
 
@@ -58,7 +57,7 @@ QString ConnectionSettingsDialog::setConnectionMode() const {
     QString connectionMode;
     if(m_ui->radioButton_1->isChecked())
     {
-        connectionMode = "Auto";
+        connectionMode = "auto";
     }
     if(m_ui->radioButton_2->isChecked())
     {
@@ -70,7 +69,7 @@ QString ConnectionSettingsDialog::setConnectionMode() const {
     }
     else if(m_ui->radioButton_4->isChecked())
     {
-        connectionMode = "Remote";
+        connectionMode = "remote";
     }
     return connectionMode;
 }

@@ -1,17 +1,13 @@
+#include "ExportTrackingKeyDialog.h"
+#include "ui_exporttrackingkeydialog.h"
 #include <QClipboard>
 #include <QFileDialog>
 #include <QTextStream>
-
 #include <common/Base58.h>
 #include <common/StringTools.h>
-
-#include "ExportTrackingKeyDialog.h"
 #include "CurrencyAdapter.h"
 #include "WalletAdapter.h"
 #include "MainWindow.h"
-
-#include "ui_exporttrackingkeydialog.h"
-
 #include <boost/utility/value_init.hpp>
 
 namespace WalletGui {

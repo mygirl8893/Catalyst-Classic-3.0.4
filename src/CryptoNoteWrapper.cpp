@@ -1,5 +1,4 @@
-#include <QDebug>
-
+#include "CryptoNoteWrapper.h"
 #include "base/CryptoNoteBasicImpl.h"
 #include "base/CryptoNoteFormatUtils.h"
 #include "core/Currency.h"
@@ -17,10 +16,9 @@
 #include "wallet_legacy/WalletLegacy.h"
 #include "log/LoggerManager.h"
 #include "System/Dispatcher.h"
-
-#include "CryptoNoteWrapper.h"
 #include "CurrencyAdapter.h"
 #include "Settings.h"
+#include <QDebug>
 
 namespace WalletGui {
 
@@ -133,6 +131,7 @@ public:
     req.threads_count = threads_count;
 
     try {
+        //CryptoNote::HttpClient httpClient(m_dispatcher, "127.0.0.1", Settings::instance().getCurrentLocalDaemonPort());
         CryptoNote::HttpClient httpClient(m_dispatcher, m_node.m_nodeHost, m_node.m_nodePort);
 
         CryptoNote::invokeJsonCommand(httpClient, "/start_mining", req, res);
@@ -155,6 +154,7 @@ public:
       CryptoNote::COMMAND_RPC_STOP_MINING::response res;
 
       try {
+         //CryptoNote::HttpClient httpClient(m_dispatcher, "127.0.0.1", Settings::instance().getCurrentLocalDaemonPort());
          CryptoNote::HttpClient httpClient(m_dispatcher, m_node.m_nodeHost, m_node.m_nodePort);
 
           CryptoNote::invokeJsonCommand(httpClient, "/stop_mining", req, res);
@@ -442,7 +442,10 @@ public:
     m_protocolHandler.set_p2p_endpoint(&m_nodeServer);
     CryptoNote::Checkpoints checkpoints(logManager);
     for (const CryptoNote::CheckpointData& checkpoint : CryptoNote::CHECKPOINTS) {
-      checkpoints.add_checkpoint(checkpoint.height, checkpoint.blockId);
+       checkpoints.add_checkpoint(checkpoint.height, checkpoint.blockId);
+    }
+    if (!Settings::instance().isTestnet()) {
+       m_core.set_checkpoints(std::move(checkpoints));
     }
   }
 
@@ -578,7 +581,7 @@ private:
   std::future<bool> m_nodeServerFuture;
 
   void peerCountUpdated(size_t count) {
-    m_callback.peerCountUpdated(*this, count);
+    m_callback.peerCountUpdated(*this, m_nodeServer.get_connections_count() - 1);
   }
 
   void localBlockchainUpdated(uint64_t height) {
