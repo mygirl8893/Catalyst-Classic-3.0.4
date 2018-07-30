@@ -3,6 +3,7 @@
 #include <QWidget>
 #include <QFrame>
 #include <QMenu>
+
 #include <QStyledItemDelegate>
 
 namespace Ui {

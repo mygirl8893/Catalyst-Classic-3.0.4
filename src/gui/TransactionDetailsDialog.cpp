@@ -1,14 +1,14 @@
 #include <QDateTime>
 
-#include <IWalletLegacy.h>
-
 #include "CurrencyAdapter.h"
 #include "DepositModel.h"
 #include "TransactionDetailsDialog.h"
 #include "TransactionsModel.h"
+#include <IWalletLegacy.h>
 #include "WalletAdapter.h"
 
 #include "ui_transactiondetailsdialog.h"
+
 
 namespace WalletGui {
 

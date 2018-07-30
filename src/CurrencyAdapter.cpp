@@ -1,6 +1,5 @@
 #include <crypto/crypto.h>
 #include <common/StringTools.h>
-
 #include "CurrencyAdapter.h"
 #include "CryptoNoteWalletConfig.h"
 #include "LoggerAdapter.h"

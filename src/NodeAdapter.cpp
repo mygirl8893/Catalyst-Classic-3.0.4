@@ -12,7 +12,6 @@
 #include "LoggerAdapter.h"
 #include "NodeAdapter.h"
 #include "Settings.h"
-
 #include <boost/program_options/variables_map.hpp>
 
 namespace WalletGui {
